@@ -1,0 +1,29 @@
+# replace "project-id-here" in the three targets below with your actual project(s)
+apiVersion: deploy.cloud.google.com/v1
+kind: DeliveryPipeline
+metadata:
+  name: deploy-demo-pipeline
+description: Security-focused CI/CD pipeline on GCP
+serialPipeline:
+ stages:
+ - targetId: CLUSTER_NAME-test
+ - targetId: CLUSTER_NAME-prod
+---
+
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: CLUSTER_NAME-test
+description: test cluster
+gke:
+  cluster: projects/PROJECT_ID/locations/REGION/clusters/CLUSTER_NAME-test
+---
+
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: CLUSTER_NAME-prod
+description: prod cluster
+requireApproval: true
+gke:
+  cluster: projects/PROJECT_ID/locations/REGION/clusters/CLUSTER_NAME-prod

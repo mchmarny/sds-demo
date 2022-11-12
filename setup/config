@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# validation 
+gcloud=$(which gcloud)   || ( echo "gcloud not found" && exit 1 )
+
+if [[ -z "${PROJECT_ID}" ]]; then
+  echo "PROJECT_ID not set, 'export PROJECT_ID=YOUR-PROJECT'."
+  exit 1
+fi;
+
+ACCOUNT=$(gcloud auth list --filter=status:ACTIVE --format="value(account)")
+if [[ -z "${ACCOUNT}" ]]; then
+  echo "Run 'gcloud auth login' to authenticate on GCP before running this script."
+  exit 1
+fi;
+
+if [[ -z "${REGION}" ]]; then
+  export REGION="us-west1"
+fi;
+
+# cluster variables
+export CLUSTER_NAME="demo"
+export CLUSTER_ZONE="${REGION}-b"
+export CLUSTER_NODE_MACHINE_TYPE="e2-medium"
+export CLUSTER_RELEASE_CHANNEL="rapid"
+export CLUSTER_SIZE="3"
+
+# pipeline variables
+export ARTIFAC_NAME="demo-app"
+
+

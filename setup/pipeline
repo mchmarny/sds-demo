@@ -1,0 +1,25 @@
+#!/bin/bash
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+set -o errexit
+set -o pipefail
+
+# creates the Artifact Registry repo
+gcloud artifacts repositories create $ARTIFAC_NAME \
+  --location $REGION \
+  --repository-format=docker
+
+# creates the Google Cloud Deploy pipeline
+gcloud deploy apply \
+  --project $PROJECT_ID \
+  --region $REGION \
+  --file clouddeploy.yaml
+  
+# gcloud beta builds triggers create github \
+#   --name="demo-deploy-trigger" \
+#   --repo-name=$REPO_NAME \
+#   --repo-owner=$REPO_OWNER \
+#   --tag-pattern="v*" \
+#   --build-config="cloudbuild.yaml"

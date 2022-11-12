@@ -1,0 +1,66 @@
+#!/bin/bash
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+set -o errexit
+set -o pipefail
+
+
+# configure defaults 
+gcloud config set project $PROJECT_ID
+gcloud config set artifacts/location $REGION
+gcloud config set deploy/region $REGION
+
+# enables APIs
+gcloud services enable \
+  artifactregistry.googleapis.com \
+  binaryauthorization.googleapis.com \
+  cloudbuild.googleapis.com \
+  clouddeploy.googleapis.com \
+  cloudkms.googleapis.com \
+  cloudresourcemanager.googleapis.com \
+  container.googleapis.com \
+  containerregistry.googleapis.com \
+  containerscanning.googleapis.com \
+  run.googleapis.com \
+
+export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
+
+# set up IAM roles for Cloud Build service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
+  --role roles/containeranalysis.notes.editor
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
+  --role roles/containeranalysis.notes.occurrences.viewer
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
+  --role roles/containeranalysis.occurrences.editor
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
+  --role roles/cloudkms.signer
+
+# add the clouddeploy.jobRunner role to your compute service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
+    --role roles/clouddeploy.jobRunner
+
+# add the Kubernetes developer permission:
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
+    --role roles/container.developer
+
+# update templates 
+sed -e "s/PROJECT_ID/${PROJECT_ID}/" -e "s/REGION/${REGION}/" -e "s/CLUSTER_NAME/${CLUSTER_NAME}/" \
+  templates/template.clouddeploy.yaml > clouddeploy.yaml
+
+sed -e "s/PROJECT_ID/${PROJECT_ID}/" -e "s/REGION/${REGION}/" \
+  templates/template.allowlist-policy.yaml > policy/binauthz/allowlist-policy.yaml
+
+sed -e "s/PROJECT_ID/${PROJECT_ID}/" -e "s/REGION/${REGION}/" \
+  templates/template.attestor-policy.yaml > policy/binauthz/attestor-policy.yaml
+

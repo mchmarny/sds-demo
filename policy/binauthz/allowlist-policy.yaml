@@ -1,0 +1,6 @@
+admissionWhitelistPatterns:
+- namePattern: us-west1-docker.pkg.dev/cloudy-demos/**
+defaultAdmissionRule:
+  enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG
+  evaluationMode: ALWAYS_DENY
+name: projects/cloudy-demos/policy

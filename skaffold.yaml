@@ -1,0 +1,43 @@
+apiVersion: skaffold/v2beta26
+kind: Config
+metadata:
+  name: modern-java-google-cloud
+build:
+  # local: 
+  #   push: false
+  artifacts:
+  - image: demo-app
+    context: demo-app
+    docker:
+      dockerfile: Dockerfile    
+    sync:
+      auto: true      
+deploy:
+  kustomize:
+    paths:
+      - k8s/overlays/dev
+profiles:
+  - name: cloud-dev
+    deploy:
+      kustomize:
+        paths:
+          - k8s/overlays/cloud-dev
+  - name: test
+    deploy:
+      kustomize:
+        paths:
+          - k8s/overlays/test
+  - name: staging
+    deploy:
+      kustomize:
+        paths:
+          - k8s/overlays/staging
+  - name: prod
+    deploy:
+      kustomize:
+        paths:
+          - k8s/overlays/prod
+portForward:
+- resourceType: deployment
+  resourceName: demo-app
+  port: 8080

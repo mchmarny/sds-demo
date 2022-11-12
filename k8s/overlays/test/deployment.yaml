@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-app
+spec:
+  template:
+    spec:
+      containers:
+      - name: demo-app
+        env:
+          - name: PORT
+            value: "8080"
+          # set an env specific variable
+          - name: TARGET
+            value: "Test Env - K8s Cluster"
+     

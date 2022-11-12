@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-app
+spec:
+  template:
+    spec:
+      containers:
+      - name: demo-app
+        env:
+          - name: PORT
+            value: "8080"
+          - name: TARGET
+            value: "Local Dev - CloudSQL Database - K8s Cluster"
+          # set the profile to use
+          - name: SPRING_PROFILES_ACTIVE
+            value: cloud-dev
+          # - name: JAVA_OPTIONS
+          #   value: "-Dspring.profiles.active=test"
+          # set the DB connection parameters
+          - name: DB_HOST
+            value: "172.24.0.3"        
+          - name: DB_PORT
+            value: "5432"  
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: gke-cloud-sql-secrets
+                key: username
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: gke-cloud-sql-secrets
+                key: password
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: gke-cloud-sql-secrets
+                key: database                   

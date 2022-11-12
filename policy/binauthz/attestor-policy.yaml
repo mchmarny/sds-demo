@@ -1,0 +1,7 @@
+defaultAdmissionRule:
+  enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG
+  evaluationMode: REQUIRE_ATTESTATION
+  requireAttestationsBy:
+  - projects/cloudy-demos/attestors/built-by-cloud-build
+  - projects/cloudy-demos/attestors/vulnz-attestor
+name: projects/cloudy-demos/policy
