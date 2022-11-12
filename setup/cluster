@@ -8,7 +8,7 @@ set -o pipefail
 
 gcloud beta container clusters create "${CLUSTER_NAME}-test" \
     --project "${PROJECT_ID}" \
-    --zone $CLUSTER_ZONE \
+    --zone "${REGION}-c" \
     --release-channel $CLUSTER_RELEASE_CHANNEL \
     --machine-type $CLUSTER_NODE_MACHINE_TYPE \
     --no-enable-basic-auth  \
@@ -39,7 +39,7 @@ gcloud beta container clusters create "${CLUSTER_NAME}-test" \
 
 gcloud beta container clusters create "${CLUSTER_NAME}-prod" \
     --project "${PROJECT_ID}" \
-    --zone $CLUSTER_ZONE \
+    --zone "${REGION}-c" \
     --release-channel $CLUSTER_RELEASE_CHANNEL \
     --machine-type $CLUSTER_NODE_MACHINE_TYPE \
     --no-enable-basic-auth  \
