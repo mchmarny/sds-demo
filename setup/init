@@ -44,6 +44,14 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
   --role roles/cloudkms.signer
 
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
+    --role roles/clouddeploy.releaser
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
+    --role roles/iam.serviceAccountUser
+
 # add the clouddeploy.jobRunner role to your compute service account
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
@@ -55,12 +63,16 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --role roles/container.developer
 
 # update templates 
-sed -e "s/PROJECT_ID/${PROJECT_ID}/" -e "s/REGION/${REGION}/" -e "s/CLUSTER_NAME/${CLUSTER_NAME}/" \
-  templates/template.clouddeploy.yaml > clouddeploy.yaml
+sed -e "s/PROJECT_ID/${PROJECT_ID}/" \
+    -e "s/CLUSTER_LOCATION/${CLUSTER_ZONE}/" \
+    -e "s/CLUSTER_NAME/${CLUSTER_NAME}/" \
+    templates/template.clouddeploy.yaml > clouddeploy.yaml
 
-sed -e "s/PROJECT_ID/${PROJECT_ID}/" -e "s/REGION/${REGION}/" \
-  templates/template.allowlist-policy.yaml > policy/binauthz/allowlist-policy.yaml
+# customize binauthz policy files from templates
+sed -e "s/PROJECT_ID/${PROJECT_ID}/" \
+    -e "s/REGION/${REGION}/" \
+    templates/template.allowlist-policy.yaml > policy/binauthz/allowlist-policy.yaml
 
-sed -e "s/PROJECT_ID/${PROJECT_ID}/" -e "s/REGION/${REGION}/" \
-  templates/template.attestor-policy.yaml > policy/binauthz/attestor-policy.yaml
+sed -e "s/PROJECT_ID/${PROJECT_ID}/" \
+    templates/template.attestor-policy.yaml > policy/binauthz/attestor-policy.yaml
 

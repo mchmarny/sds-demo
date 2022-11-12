@@ -7,8 +7,8 @@ set -o errexit
 set -o pipefail
 
 gcloud beta container clusters create "${CLUSTER_NAME}-test" \
-    --project "${PROJECT_ID}" \
-    --zone "${REGION}-c" \
+    --project $PROJECT_ID \
+    --zone $CLUSTER_ZONE \
     --release-channel $CLUSTER_RELEASE_CHANNEL \
     --machine-type $CLUSTER_NODE_MACHINE_TYPE \
     --no-enable-basic-auth  \
@@ -38,8 +38,8 @@ gcloud beta container clusters create "${CLUSTER_NAME}-test" \
     --async
 
 gcloud beta container clusters create "${CLUSTER_NAME}-prod" \
-    --project "${PROJECT_ID}" \
-    --zone "${REGION}-c" \
+    --project $PROJECT_ID \
+    --zone $CLUSTER_ZONE \
     --release-channel $CLUSTER_RELEASE_CHANNEL \
     --machine-type $CLUSTER_NODE_MACHINE_TYPE \
     --no-enable-basic-auth  \

@@ -18,13 +18,18 @@ if [[ -z "${REGION}" ]]; then
   export REGION="us-west1"
 fi;
 
+# derived vars 
+export PROJECT_NUMBER="$(gcloud projects describe "${PROJECT_ID}" --format='value(projectNumber)')"
+export CLOUD_BUILD_SA_EMAIL="${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com"
+
 # cluster variables
 export CLUSTER_NAME="demo"
 export CLUSTER_NODE_MACHINE_TYPE="e2-medium"
 export CLUSTER_RELEASE_CHANNEL="rapid"
 export CLUSTER_SIZE="3"
+export CLUSTER_ZONE="${REGION}-c"
 
 # pipeline variables
-export ARTIFAC_NAME="demo-app"
+export REGISTRY_NAME="hello"
 
 

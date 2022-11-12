@@ -16,6 +16,7 @@ Create GCP resources
 
 ```shell
 setup/pipeline
+setup/authz
 setup/cluster
 ```
 
@@ -25,3 +26,8 @@ Wait fro cluster to be created
 watch gcloud beta container clusters list --filter="resourceLabels.demo:build"
 ```
 
+## Cleanup 
+
+```shell
+setup/delete
+```

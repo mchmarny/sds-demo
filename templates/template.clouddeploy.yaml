@@ -1,4 +1,3 @@
-# replace "project-id-here" in the three targets below with your actual project(s)
 apiVersion: deploy.cloud.google.com/v1
 kind: DeliveryPipeline
 metadata:
@@ -16,7 +15,7 @@ metadata:
   name: CLUSTER_NAME-test
 description: test cluster
 gke:
-  cluster: projects/PROJECT_ID/locations/REGION/clusters/CLUSTER_NAME-test
+  cluster: projects/PROJECT_ID/locations/CLUSTER_LOCATION/clusters/CLUSTER_NAME-test
 ---
 
 apiVersion: deploy.cloud.google.com/v1
@@ -26,4 +25,4 @@ metadata:
 description: prod cluster
 requireApproval: true
 gke:
-  cluster: projects/PROJECT_ID/locations/REGION/clusters/CLUSTER_NAME-prod
+  cluster: projects/PROJECT_ID/locations/CLUSTER_LOCATION/clusters/CLUSTER_NAME-prod
