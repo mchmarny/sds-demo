@@ -1,12 +1,27 @@
 # GCP CI/CD security demo
 
-This repo demonstrates a security focused CI/CD pipeline for GKE with Google Cloud tools Cloud Build, Binary Authorization, Artifact Registry, Container Analysis, and Google Cloud Deploy. The example app is a simple containerized Maven example app with Kustomize overlays for Kubernetes manifest rendering!
+> This go demo is based on the [secure maven build demo](https://github.com/vszal/secure-cicd-maven) by [@vszal](https://github.com/vszal)
 
-[![Google Cloud Software Supply Chain Security Demo Flow](https://user-images.githubusercontent.com/76225123/170594159-cae11896-5ac1-473c-8d71-924a8d059155.png)](https://user-images.githubusercontent.com/76225123/170594159-cae11896-5ac1-473c-8d71-924a8d059155.png)
+This repo bootstraps a CI/CD pipeline on Google Cloud. That pipelines combines the following services to demonstrate policy controls for container attestation and build provenance for workloads deployed into GKE
+
+* Cloud Build with GitHub repo trigger on tag push
+* Binary Authorization for policy-based deployment control to attest that images:
+  * are built by Cloud Build
+  * have no known vulnerability (been scanned and signed using key from KMS)
+* Artifact Registry for image storage and management
+* Container Analysis for vulnerability scanning and to manage meta-data
+* Cloud Deploy to manage the entire delivery pipeline 
+
+> For example of type of an app that uses this pipeline see [hello](https://github.com/mchmarny/hello).
+
+## Requirements 
+
+* [gcloud](https://cloud.google.com/sdk/docs/install)
+* [jq](https://stedolan.github.io/jq/download/)
 
 ## Setup 
 
-Configure local resources
+To deploy this pipeline into your GCP project, starts with configuring the local resources:
 
 ```shell
 setup/init
@@ -16,14 +31,14 @@ Create GCP resources
 
 ```shell
 setup/pipeline
-setup/authz
+setup/analysis
 setup/cluster
 ```
 
-Wait fro cluster to be created
+Wait for cluster to be created
 
 ```shell
-watch gcloud beta container clusters list --filter="resourceLabels.demo:build"
+gcloud container clusters list --filter="resourceLabels.demo:build"
 ```
 
 ## Cleanup 

@@ -109,9 +109,14 @@ gcloud container binauthz policy import policy/binauthz/attestor-policy.yaml
 
 # print trigger variables 
 cat << EOF
-Trigger Variables:
+Trigger variables:
 
 _KMS_DIGEST_ALG: SHA512
 _KMS_KEY_NAME: ${KEY_NAME}/cryptoKeyVersions/1
 _NOTE_NAME: ${NOTE_LOCATION}
+
+To authenticate to GitHub and create repo trigger navigate to:
+
+https://console.cloud.google.com/cloud-build/triggers;region=${REGION}/add?project=${PROJECT_ID}
+
 EOF

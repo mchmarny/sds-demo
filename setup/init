@@ -6,7 +6,6 @@ DIR="$(dirname "$0")"
 set -o errexit
 set -o pipefail
 
-
 # configure defaults 
 gcloud config set project $PROJECT_ID
 gcloud config set artifacts/location $REGION
@@ -24,8 +23,6 @@ gcloud services enable \
   containerregistry.googleapis.com \
   containerscanning.googleapis.com \
   run.googleapis.com \
-
-export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
 
 # set up IAM roles for Cloud Build service account
 gcloud projects add-iam-policy-binding $PROJECT_ID \
