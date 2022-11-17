@@ -69,13 +69,8 @@ kubectl apple -f https://raw.githubusercontent.com/mchmarny/hello/main/examples/
 
 * Use [demo app repo](https://github.com/mchmarny/hello) (may need to change repo source if cloning)
 * Make some code change (e.g. edit API message in `route.go`, and bump version number in `.version`)
-* Git add, commit, push
-  * `git add --all`
-  * `git commit -s -am "version bump"`
-  * `git push --all`
-* Git tag and push 
-  * `git tag $(cat .version)`
-	* `git push origin $(cat .version)`
+* Git add, commit, push in VS Code
+* Git tag and push `make tag`
 * Navigate to Cloud Build [triggers](https://console.cloud.google.com/cloud-build/triggers)
   * Push on tag (pattern)
   * Back in code, review config [cloudbuild.yaml](https://github.com/mchmarny/hello/blob/main/cloudbuild.yaml)
