@@ -67,6 +67,8 @@ kubectl apple -f https://raw.githubusercontent.com/mchmarny/hello/main/examples/
 
 ### Build on Tag (end-to-end)
 
+* Show delivery pipeline config `clouddeploy.yaml`
+  * And deployed `gcloud deploy delivery-pipelines list --region=us-west1`
 * Use [demo app repo](https://github.com/mchmarny/hello) (may need to change repo source if cloning)
 * Make some code change (e.g. edit API message in `route.go`, and bump version number in `.version`)
 * Git add, commit, push in VS Code
