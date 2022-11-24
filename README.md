@@ -9,7 +9,9 @@ This repo bootstraps a CI/CD pipeline on Google Cloud. That pipelines combines t
 * Binary Authorization for policy-based deployment control to attest that resulting images:
   * are built by Cloud Build
   * have no known vulnerability (been scanned and signed using key from KMS)
-* Artifact Registry for image storage and management
+  * signed using `cosign`
+  * have corresponding SBOM generated using `syft` and signed
+* Artifact Registry for image, SBOM, and attestation storage and management
 * Container analysis for vulnerability and to meta-data management 
 * Cloud Deploy to manage the entire delivery pipeline 
 * GKE security posture dashboard with Configuration concerns
@@ -78,7 +80,7 @@ kubectl apple -f https://raw.githubusercontent.com/mchmarny/hello/main/examples/
   * Back in code, review config [cloudbuild.yaml](https://github.com/mchmarny/hello/blob/main/cloudbuild.yaml)
 * Navigate to Cloud Build [builds](https://console.cloud.google.com/cloud-build/builds) in UI
   * Drill on active build 
-  * Review steps (test, build, publish, scan, sign, release)
+  * Review steps (test, build, publish, scan, sign, sbom, release)
   * On Build Summary, show Build Artifacts > Image security insights ([SLSA Build Level 3](https://slsa.dev/spec/v0.1/levels))
 * Navigate to Cloud Deploy [pipelines](https://console.cloud.google.com/deploy/delivery-pipelines)
   * Drill into `deploy-demo-pipeline`
