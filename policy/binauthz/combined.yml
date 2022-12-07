@@ -1,0 +1,29 @@
+name: projects/cloudy-demos/policy
+globalPolicyEvaluationMode: ENABLE
+defaultAdmissionRule:
+  enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG
+  evaluationMode: REQUIRE_ATTESTATION
+  requireAttestationsBy:
+  - projects/cloudy-demos/attestors/built-by-cloud-build
+  - projects/cloudy-demos/attestors/vulnz-attestor
+clusterAdmissionRules:
+  us-west1-c.demo-test:
+    enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG
+    evaluationMode: REQUIRE_ATTESTATION
+    requireAttestationsBy:
+    - projects/cloudy-demos/attestors/built-by-cloud-build
+    - projects/cloudy-demos/attestors/vulnz-attestor
+  us-west1-c.demo-prod:
+    enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG
+    evaluationMode: REQUIRE_ATTESTATION
+    requireAttestationsBy:
+    - projects/cloudy-demos/attestors/built-by-cloud-build
+    - projects/cloudy-demos/attestors/vulnz-attestor
+admissionWhitelistPatterns:
+- namePattern: gcr.io/stackdriver-agents/**
+- namePattern: gcr.io/tekton-releases/**
+- namePattern: gcr.io/kaniko-project/**
+- namePattern: docker.io/library/**
+- namePattern: snyk/snyk:golang
+- namePattern: us-west1-docker.pkg.dev/cloudy-demos/tools/**
+- namePattern: us-docker.pkg.dev/cloudy-demos/builders/**
