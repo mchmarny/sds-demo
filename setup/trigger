@@ -9,6 +9,11 @@ set -o pipefail
 REPO_OWNER=$1
 REPO_NAME=${2:-cloudbuild-demo}
 
+if [[ -z "$REPO_OWNER" ]]; then
+  echo "Usage $0 <your-github-username>"
+  exit 1
+fi
+
 # get the key path 
 export KEY_NAME=$(gcloud kms keys describe --keyring $KMS_RING_NAME \
   --location $REGION $KMS_KEY_NAME --format=json \
