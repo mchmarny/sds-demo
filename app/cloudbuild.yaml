@@ -62,7 +62,8 @@ steps:
     - VERSION=$TAG_NAME
     args:
     - -c
-    - |
+    - |-
+      cat image-digest.txt
       builder $(/bin/cat image-digest.txt)
 
   # Test against my vulnerability policy

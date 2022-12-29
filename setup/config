@@ -30,7 +30,7 @@ export CLUSTER_SIZE="3"
 export CLUSTER_ZONE="${REGION}-c"
 
 # pipeline variables
-export REGISTRY_NAME="hello"
+export REGISTRY_NAME="cloudbuild-demo"
 
 # binary authorization variables
 export KMS_RING_NAME="binauthz"
