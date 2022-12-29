@@ -63,11 +63,10 @@ steps:
     args:
     - -c
     - |-
-      cat image-digest.txt
-      builder $(/bin/cat image-digest.txt)
+      builder $(cat image-digest.txt)
 
   # Test against my vulnerability policy
-  - id: policy
+  - id: sign
     name: us-docker.pkg.dev/cloudy-demos/kritis/signer
     entrypoint: /bin/bash
     waitFor: ["sbom"]
@@ -78,7 +77,7 @@ steps:
       /kritis/signer \
       -v 10 \
       -alsologtostderr \
-      -image $(/bin/cat image-digest.txt) \
+      -image $(cat image-digest.txt) \
       -policy vulnz-signing-policy.yaml \
       -kms_key_name ${_KMS_KEY_NAME} \
       -kms_digest_alg ${_KMS_DIGEST_ALG} \
@@ -88,7 +87,7 @@ steps:
   - id: release
     name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: /bin/bash
-    waitFor: ["policy"]
+    waitFor: ["sign"]
     dir: app
     args:
     - -c

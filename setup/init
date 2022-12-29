@@ -42,7 +42,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 
 gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-  --role roles/cloudkms.signer
+  --role roles/cloudkms.admin
 
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
@@ -95,3 +95,16 @@ gcloud kms keys create $KMS_KEY_NAME \
   --keyring $KMS_RING_NAME \
   --purpose "asymmetric-signing" \
   --default-algorithm "rsa-sign-pkcs1-4096-sha512"
+
+# grants the GCB service account access to the key
+gcloud kms keys add-iam-policy-binding $KMS_KEY_NAME \
+    --keyring $KMS_RING_NAME \
+    --location $REGION \
+    --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
+    --role roles/cloudkms.cryptoKeyEncrypterDecrypter
+
+gcloud kms keys add-iam-policy-binding $KMS_KEY_NAME \
+    --keyring $KMS_RING_NAME \
+    --location $REGION \
+    --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
+    --role roles/cloudkms.viewer
