@@ -1,0 +1,111 @@
+# Overview: Cloud Build build pipeline with Cloud Deploy release 
+# Note: COMMIT_SHA variable requires git tag commit
+
+substitutions:
+  _APP_NAME: demo-app
+  _PIPELINE_NAME: deploy-demo-pipeline
+  _POOL_NAME: demo-pool
+  _GO_VERSION: "1.19"
+  _SBOM_BUILDER: v0.3.7
+
+steps:
+  # Go test
+  - id: test
+    name: golang:${_GO_VERSION}
+    env:
+    - GO111MODULE=on
+    entrypoint: /bin/bash
+    dir: app
+    args:
+    - -c
+    - |
+      go test -short -count=1 -race -covermode=atomic -coverprofile=cover.out ./...
+
+  # Build image
+  - id: build
+    name: gcr.io/cloud-builders/docker
+    entrypoint: /bin/bash
+    waitFor: ["test"]
+    dir: app
+    args:
+    - -c
+    - |
+      docker build --build-arg VERSION=${TAG_NAME} \
+        -t "${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_APP_NAME}:${COMMIT_SHA}" \
+        -t "${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_APP_NAME}:${TAG_NAME}" \
+        .
+  
+  # Publish image, get sha256
+  - id: publish
+    name: gcr.io/cloud-builders/docker
+    entrypoint: /bin/bash
+    waitFor: ["build"]
+    dir: app
+    args:
+    - -c
+    - |-
+      docker push "${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_APP_NAME}:${TAG_NAME}"
+      docker image inspect "${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_APP_NAME}:${TAG_NAME}" \
+        --format '{{index .RepoDigests 0}}' > image-digest.txt
+      cat image-digest.txt
+
+  # Generate SBOM (includes vulnerability scan)
+  - id: sbom
+    name: us-docker.pkg.dev/cloudy-demos/builders/sbom-builder:${_SBOM_BUILDER}
+    entrypoint: /bin/bash
+    waitFor: ["publish"]
+    dir: app
+    env:
+    - PROJECT=$PROJECT_ID
+    - KEY=$_KMS_KEY_NAME
+    - COMMIT=$COMMIT_SHA
+    - VERSION=$TAG_NAME
+    args:
+    - -c
+    - |
+      builder $(/bin/cat image-digest.txt)
+
+  # Test against my vulnerability policy
+  - id: policy
+    name: us-docker.pkg.dev/cloudy-demos/kritis/signer
+    entrypoint: /bin/bash
+    waitFor: ["sbom"]
+    dir: app
+    args:
+    - -c
+    - |
+      /kritis/signer \
+      -v 10 \
+      -alsologtostderr \
+      -image $(/bin/cat image-digest.txt) \
+      -policy vulnz-signing-policy.yaml \
+      -kms_key_name ${_KMS_KEY_NAME} \
+      -kms_digest_alg ${_KMS_DIGEST_ALG} \
+      -note_name ${_NOTE_NAME}
+
+  # Create release in Google Cloud Deploy
+  - id: release
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: /bin/bash
+    waitFor: ["policy"]
+    dir: app
+    args:
+    - -c
+    - |
+      gcloud deploy releases create rel-${SHORT_SHA} \
+      --delivery-pipeline ${_PIPELINE_NAME} \
+      --region ${LOCATION} \
+      --annotations commitId=${REVISION_ID} \
+      --images "${_APP_NAME}=$(/bin/cat image-digest.txt)"
+
+images:
+- ${LOCATION}-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$_APP_NAME:$TAG_NAME
+
+options:
+  requestedVerifyOption: VERIFIED # ensure attestation gen, provenance metadata, for this build
+  sourceProvenanceHash: ["SHA256"]
+  pool:
+    name: 'projects/$PROJECT_ID/locations/$LOCATION/workerPools/$_POOL_NAME'
+
+tags:
+- demo

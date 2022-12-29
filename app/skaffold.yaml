@@ -1,0 +1,39 @@
+apiVersion: skaffold/v2beta29
+kind: Config
+metadata:
+  name: hello
+build:
+  artifacts:
+  - image: hello
+    docker:
+      dockerfile: Dockerfile
+    sync:
+      infer: ["**/*"]
+test:
+- image: hello
+  custom:
+  - command: go test -short -count=1 -race
+deploy:
+  kustomize:
+    paths:
+      - deployments/overlays/dev
+profiles:
+  - name: dev
+    deploy:
+      kustomize:
+        paths:
+          - deployments/overlays/dev
+  - name: test
+    deploy:
+      kustomize:
+        paths:
+          - deployments/overlays/test
+  - name: prod
+    deploy:
+      kustomize:
+        paths:
+          - deployments/overlays/prod
+portForward:
+- resourceType: deployment
+  resourceName: hello
+  port: 8080

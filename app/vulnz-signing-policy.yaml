@@ -1,0 +1,11 @@
+apiVersion: kritis.grafeas.io/v1beta1
+kind: VulnzSigningPolicy
+metadata:
+  name: demo-vsp
+spec:
+  imageVulnerabilityRequirements:
+    maximumFixableSeverity: MEDIUM
+    maximumUnfixableSeverity: LOW
+    allowlistCVEs:
+    - projects/goog-vulnz/notes/CVE-2020-14155 # integer overflow in libpcre
+    - projects/goog-vulnz/notes/CVE-2019-25013 # buffer over-read in glibc 

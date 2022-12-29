@@ -1,0 +1,28 @@
+apiVersion: deploy.cloud.google.com/v1
+kind: DeliveryPipeline
+metadata:
+  name: deploy-demo-pipeline
+description: Security-focused CI/CD pipeline on GCP
+serialPipeline:
+ stages:
+ - targetId: demo-test
+ - targetId: demo-prod
+---
+
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: demo-test
+description: test cluster
+gke:
+  cluster: projects/cloudy-labz/locations/us-west1-c/clusters/demo-test
+---
+
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: demo-prod
+description: prod cluster
+requireApproval: true
+gke:
+  cluster: projects/cloudy-labz/locations/us-west1-c/clusters/demo-prod
