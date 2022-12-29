@@ -87,7 +87,7 @@ gcloud artifacts repositories create $REGISTRY_NAME \
 gcloud deploy apply \
   --project $PROJECT_ID \
   --region $REGION \
-  --file clouddeploy.yaml
+  --file app/clouddeploy.yaml
 
 # create key for use in both attestors 
 gcloud kms keyrings create $KMS_RING_NAME \
