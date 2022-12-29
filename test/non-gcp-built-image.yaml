@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: non-gcp-built-image
+  labels:
+    app: non-gcp-built-image
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: non-gcp-built-image
+  template:
+    metadata:
+      labels:
+        app: non-gcp-built-image
+    spec:
+      containers:
+      - name: non-gcp-built-image
+        image: docker.io/mchmarny/hello@sha256:32250efd347b82ddb8b47d468411227b13189af26eaba806db7bc366c68f7259
+        env:
+          - name: PORT
+            value: "8080"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: non-gcp-built-image
+  labels:
+    app: non-gcp-built-image
+spec:
+  ports:
+  - name: http
+    port: 8080
+  type: LoadBalancer
+  selector:
+    app: non-gcp-built-image
+

@@ -1,4 +1,4 @@
-name: projects/PROJECT_ID/policy
+name: projects/cloudy-labz/policy
 defaultAdmissionRule:
   enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG
   evaluationMode: ALWAYS_ALLOW
@@ -7,14 +7,14 @@ clusterAdmissionRules:
     enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG
     evaluationMode: REQUIRE_ATTESTATION
     requireAttestationsBy:
-    - projects/PROJECT_ID/attestors/GCB_ATTESTOR
-    - projects/PROJECT_ID/attestors/VULN_ATTESTOR
+    - projects/cloudy-labz/attestors/built-by-cloud-build
+    - projects/cloudy-labz/attestors/vulnz-attestor
   us-west1-c.demo-test:
     enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG
     evaluationMode: REQUIRE_ATTESTATION
     requireAttestationsBy:
-    - projects/PROJECT_ID/attestors/GCB_ATTESTOR
-    - projects/PROJECT_ID/attestors/VULN_ATTESTOR
+    - projects/cloudy-labz/attestors/built-by-cloud-build
+    - projects/cloudy-labz/attestors/vulnz-attestor
 admissionWhitelistPatterns:
 - namePattern: us.gcr.io/google-containers/**
 - namePattern: gcr.io/google_containers/**

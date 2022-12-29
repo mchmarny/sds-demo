@@ -6,38 +6,9 @@ DIR="$(dirname "$0")"
 set -o errexit
 set -o pipefail
 
-gcloud beta container clusters create "${CLUSTER_NAME}-test" \
-    --project $PROJECT_ID \
-    --zone $CLUSTER_ZONE \
-    --release-channel $CLUSTER_RELEASE_CHANNEL \
-    --machine-type $CLUSTER_NODE_MACHINE_TYPE \
-    --no-enable-basic-auth  \
-    --image-type "COS_CONTAINERD" \
-    --disk-type "pd-standard" \
-    --disk-size "100" \
-    --metadata disable-legacy-endpoints=true \
-    --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" \
-    --num-nodes $CLUSTER_SIZE \
-    --logging=SYSTEM,WORKLOAD \
-    --max-pods-per-node "110" \
-    --default-max-pods-per-node "110" \
-    --monitoring=SYSTEM \
-    --network "projects/${PROJECT_ID}/global/networks/default" \
-    --subnetwork "projects/${PROJECT_ID}/regions/${REGION}/subnetworks/default" \
-    --enable-ip-alias \
-    --no-enable-intra-node-visibility \
-    --no-enable-master-authorized-networks \
-    --enable-autoupgrade \
-    --enable-autorepair \
-    --max-surge-upgrade 1 \
-    --max-unavailable-upgrade 0 \
-    --enable-shielded-nodes \
-    --binauthz-evaluation-mode=PROJECT_SINGLETON_POLICY_ENFORCE \
-    --addons HorizontalPodAutoscaling,HttpLoadBalancing,GcePersistentDiskCsiDriver \
-    --labels "demo=build,group=${CLUSTER_NAME}" \
-    --async
+NAME=$1
 
-gcloud beta container clusters create "${CLUSTER_NAME}-prod" \
+gcloud beta container clusters create $NAME \
     --project $PROJECT_ID \
     --zone $CLUSTER_ZONE \
     --release-channel $CLUSTER_RELEASE_CHANNEL \
@@ -65,5 +36,5 @@ gcloud beta container clusters create "${CLUSTER_NAME}-prod" \
     --enable-shielded-nodes \
     --binauthz-evaluation-mode=PROJECT_SINGLETON_POLICY_ENFORCE \
     --addons HorizontalPodAutoscaling,HttpLoadBalancing,GcePersistentDiskCsiDriver \
-    --labels "demo=build,group=${CLUSTER_NAME}" \
+    --labels "demo=build,group=${NAME}" \
     --async

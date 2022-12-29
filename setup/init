@@ -11,6 +11,8 @@ gcloud config set project $PROJECT_ID
 gcloud config set artifacts/location $REGION
 gcloud config set deploy/region $REGION
 
+echo "Iniatializing project $PROJECT_ID in region $REGION..."
+
 # enables APIs
 gcloud services enable \
   artifactregistry.googleapis.com \
@@ -23,6 +25,7 @@ gcloud services enable \
   containerregistry.googleapis.com \
   containerscanning.googleapis.com \
   run.googleapis.com \
+  servicenetworking.googleapis.com
 
 # set up IAM roles for Cloud Build service account
 gcloud projects add-iam-policy-binding $PROJECT_ID \
@@ -63,13 +66,32 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 sed -e "s/PROJECT_ID/${PROJECT_ID}/" \
     -e "s/CLUSTER_LOCATION/${CLUSTER_ZONE}/" \
     -e "s/CLUSTER_NAME/${CLUSTER_NAME}/" \
-    templates/template.clouddeploy.yaml > clouddeploy.yaml
-
-# customize binauthz policy files from templates
-sed -e "s/PROJECT_ID/${PROJECT_ID}/" \
-    -e "s/REGION/${REGION}/" \
-    templates/template.allowlist-policy.yaml > policy/binauthz/allowlist-policy.yaml
+    templates/template.clouddeploy.yaml > app/clouddeploy.yaml
 
 sed -e "s/PROJECT_ID/${PROJECT_ID}/" \
-    templates/template.attestor-policy.yaml > policy/binauthz/attestor-policy.yaml
+    -e "s/GCB_ATTESTOR/${GCB_ATTESTOR_ID}/" \
+    -e "s/VULN_ATTESTOR/${VULN_ATTESTOR_ID}/" \
+    templates/template.attestor-policy.yaml > policy/attestor-policy.yaml
 
+# creates the Artifact Registry repo
+gcloud artifacts repositories create $REGISTRY_NAME \
+  --location $REGION \
+  --repository-format=docker
+
+# creates the Google Cloud Deploy pipeline
+gcloud deploy apply \
+  --project $PROJECT_ID \
+  --region $REGION \
+  --file clouddeploy.yaml
+
+# create key for use in both attestors 
+gcloud kms keyrings create $KMS_RING_NAME \
+  --project $PROJECT_ID \
+  --location $REGION
+
+gcloud kms keys create $KMS_KEY_NAME \
+  --project $PROJECT_ID \
+  --location $REGION \
+  --keyring $KMS_RING_NAME \
+  --purpose "asymmetric-signing" \
+  --default-algorithm "rsa-sign-pkcs1-4096-sha512"

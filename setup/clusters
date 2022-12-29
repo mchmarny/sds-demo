@@ -1,0 +1,10 @@
+#!/bin/bash
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+set -o errexit
+set -o pipefail
+
+setup/cluster "${CLUSTER_NAME}-test"
+setup/cluster "${CLUSTER_NAME}-prod"
