@@ -15,3 +15,8 @@ gcloud container binauthz policy import policy/attestor-policy.yaml
 
 # list attestors
 gcloud container binauthz attestors list
+
+# list attestation 
+gcloud container binauthz attestations list \
+    --attestor=$VULN_ATTESTOR_ID \
+    --attestor-project=$PROJECT_ID

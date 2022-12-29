@@ -2,7 +2,7 @@
 # Note: COMMIT_SHA variable requires git tag commit
 
 substitutions:
-  _APP_NAME: demo-app
+  _APP_NAME: hello
   _PIPELINE_NAME: deploy-demo-pipeline
   _POOL_NAME: demo-pool
   _GO_VERSION: "1.19"
