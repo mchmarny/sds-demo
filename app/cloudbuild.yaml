@@ -72,15 +72,17 @@ steps:
     waitFor: ["sbom"]
     args:
     - -c
-    - |
+    - |-
+      cat policy/vulnz-signing-policy.yaml
       /kritis/signer \
-      -v 10 \
+      -v=10 \
+      -mode=check-and-sign \
       -alsologtostderr \
-      -image $(cat image-digest.txt) \
-      -policy policy/vulnz-signing-policy.yaml \
-      -kms_key_name ${_KMS_KEY_NAME} \
-      -kms_digest_alg ${_KMS_DIGEST_ALG} \
-      -note_name ${_NOTE_NAME}
+      -image=$(cat image-digest.txt) \
+      -policy=policy/vulnz-signing-policy.yaml \
+      -note_name=${_NOTE_NAME} \
+      -kms_key_name=${_KMS_KEY_NAME} \
+      -kms_digest_alg=${_KMS_DIGEST_ALG}
 
   # Create release in Google Cloud Deploy
   - id: release

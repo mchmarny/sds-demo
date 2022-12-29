@@ -40,6 +40,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
   --role roles/containeranalysis.occurrences.editor
 
+# TODO: scope this down based on https://github.com/sigstore/cosign/blob/main/KMS.md
 gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
   --role roles/cloudkms.admin
@@ -101,7 +102,7 @@ gcloud kms keys add-iam-policy-binding $KMS_KEY_NAME \
     --keyring $KMS_RING_NAME \
     --location $REGION \
     --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-    --role roles/cloudkms.cryptoKeyEncrypterDecrypter
+    --role roles/cloudkms.signerVerifier
 
 gcloud kms keys add-iam-policy-binding $KMS_KEY_NAME \
     --keyring $KMS_RING_NAME \
