@@ -17,5 +17,3 @@ gcloud beta container clusters delete "${CLUSTER_NAME}-prod" \
     --project $PROJECT_ID \
     --zone $CLUSTER_ZONE \
     --async
-
-# TODO: Add AuthZ and Pipeline resources 

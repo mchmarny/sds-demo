@@ -1,17 +1,16 @@
-# GCP CI/CD security demo
+# GCP Secure CI/CD Pipeline Demo
 
-> This go demo is based on the [secure maven build demo](https://github.com/vszal/secure-cicd-maven) by [@vszal](https://github.com/vszal)
+This repo bootstraps a full CI/CD pipeline on Google Cloud to demonstrate policy controls for container image provenance, and for GKE authorization based on attestation. What's included:
 
-This repo bootstraps a CI/CD pipeline on Google Cloud. That pipelines combines the following services to demonstrate policy controls for container attestation, and image provenance for workloads deployed into GKE:
-
-* Cloud Build with GitHub repo trigger on push of tag
-* Binary Authorization for policy-based deployment control for GKE to attest that resulting images:
-  * are built by Cloud Build
-  * have no known vulnerability (been scanned and signed using key from KMS)
-  * have corresponding SBOM
-* Artifact Registry for image, SBOM, and attestation storage and management
-* Container analysis for vulnerability and to meta-data management 
-* Cloud Deploy to manage the entire delivery pipeline 
+* Cloud Build pipeline with on tag GitHub repo trigger and SBOM generation
+* Test and Prod GKE clusters configured for Binary Authorization
+* 2 Binary Authorization policies to ensure that images:
+  * Have Cloud Build provenance (been built in GCB)
+  * Meet minimal vulnerability validation policy (been successfully scanned using Kritis)
+* 1 vulnerability signing policy with min fixable and un-fixable settings
+* Artifact Registry registry with SLSA level 3 verification 
+* Container analysis with vulnerability scanning and meta-data management 
+* Cloud Deploy pipeline with approval-based test to prod promotion
 * GKE security posture dashboard with Configuration concerns
 
 ## Requirements 
@@ -135,6 +134,8 @@ kubectl apply -f test/non-gcp-built-image.yaml
   * Built in Cloud Build (attested with KMS key signature)
   * Show dry run and images exempt option on policy as a means to incremental rollout strategy
 
+![](images/gke-bad.png)
+
 ### Build on Tag (end-to-end demo)
 
 * Show delivery pipeline config `app/clouddeploy.yaml`
@@ -160,20 +161,35 @@ git push origin $VERSION_TAG
 * Navigate to Cloud Build [triggers](https://console.cloud.google.com/cloud-build/triggers)
   * Push on tag (pattern)
   * Back in code, review config `app/cloudbuild.yaml`
+  * Review the vulnerability scanner policy `policy/vulnz-signing-policy.yaml`
+
+![](images/trigger.png)
+
 * Navigate to Cloud Build [builds](https://console.cloud.google.com/cloud-build/builds) in UI
   * Drill on active build 
   * Review steps (test, build, publish, scan, sign, sbom, release)
   * On Build Summary, show Build Artifacts > Image security insights ([SLSA Build Level 3](https://slsa.dev/spec/v0.1/levels))
+
+![](images/build.png)
+
 * Navigate to Cloud Deploy [pipelines](https://console.cloud.google.com/deploy/delivery-pipelines)
   * Drill into `deploy-demo-pipeline`
   * Show 2 environments (test, prod)
   * Drill into the latest release 
+
+![](images/deploy.png)
+
 * Navigate to GKE [workloads](https://console.cloud.google.com/kubernetes/workload/overview)
   * Drill into `hello` (note `non-gcp-built-image` erred due to lack of attestation)
   * Navigate to exposed service (`/api/ping`) and show version
 * Back to Cloud Deploy [pipelines](https://console.cloud.google.com/deploy/delivery-pipelines) 
   * Show promotion and approval with manifest diffs and annotation comp (show more)
+
+![](images/approve.png)
+
 * Show GKE [Security Posture](https://console.cloud.google.com/kubernetes/security/dashboard)
+
+![](images/posture.png)
 
 ## Cleanup 
 
