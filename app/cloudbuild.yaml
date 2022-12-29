@@ -70,18 +70,17 @@ steps:
     name: us-docker.pkg.dev/cloudy-demos/kritis/signer
     entrypoint: /bin/bash
     waitFor: ["sbom"]
-    dir: app
     args:
     - -c
     - |
       /kritis/signer \
-      -v=10 \
+      -v 10 \
       -alsologtostderr \
-      -image=$(cat image-digest.txt) \
-      -policy=vulnz-signing-policy.yaml \
-      -kms_key_name=${_KMS_KEY_NAME} \
-      -kms_digest_alg=${_KMS_DIGEST_ALG} \
-      -note_name=${_NOTE_NAME}
+      -image $(cat image-digest.txt) \
+      -policy policy/vulnz-signing-policy.yaml \
+      -kms_key_name ${_KMS_KEY_NAME} \
+      -kms_digest_alg ${_KMS_DIGEST_ALG} \
+      -note_name ${_NOTE_NAME}
 
   # Create release in Google Cloud Deploy
   - id: release
@@ -96,7 +95,7 @@ steps:
       --delivery-pipeline ${_PIPELINE_NAME} \
       --region ${LOCATION} \
       --annotations commitId=${REVISION_ID} \
-      --images "${_APP_NAME}=$(/bin/cat image-digest.txt)"
+      --images "${_APP_NAME}=$(cat image-digest.txt)"
 
 images:
 - ${LOCATION}-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$_APP_NAME:$TAG_NAME
