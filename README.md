@@ -48,7 +48,7 @@ setup/init
 Create GKE cluster:
 
 ```shell
-setup/cluster
+setup/clusters
 ```
 
 And, configure Binary Authorization:
