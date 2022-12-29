@@ -159,7 +159,7 @@ git push origin $VERSION_TAG
 
 * Navigate to Cloud Build [triggers](https://console.cloud.google.com/cloud-build/triggers)
   * Push on tag (pattern)
-  * Back in code, review config [cloudbuild.yaml](https://github.com/mchmarny/hello/blob/main/cloudbuild.yaml)
+  * Back in code, review config `app/cloudbuild.yaml`
 * Navigate to Cloud Build [builds](https://console.cloud.google.com/cloud-build/builds) in UI
   * Drill on active build 
   * Review steps (test, build, publish, scan, sign, sbom, release)

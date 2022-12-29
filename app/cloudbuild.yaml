@@ -75,13 +75,13 @@ steps:
     - -c
     - |
       /kritis/signer \
-      -v 10 \
+      -v=10 \
       -alsologtostderr \
-      -image $(cat image-digest.txt) \
-      -policy vulnz-signing-policy.yaml \
-      -kms_key_name ${_KMS_KEY_NAME} \
-      -kms_digest_alg ${_KMS_DIGEST_ALG} \
-      -note_name ${_NOTE_NAME}
+      -image=$(cat image-digest.txt) \
+      -policy=vulnz-signing-policy.yaml \
+      -kms_key_name=${_KMS_KEY_NAME} \
+      -kms_digest_alg=${_KMS_DIGEST_ALG} \
+      -note_name=${_NOTE_NAME}
 
   # Create release in Google Cloud Deploy
   - id: release
