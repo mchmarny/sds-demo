@@ -169,7 +169,7 @@ git push origin $VERSION_TAG
   * Show 2 environments (test, prod)
   * Drill into the latest release 
 * Navigate to GKE [workloads](https://console.cloud.google.com/kubernetes/workload/overview)
-  * Drill into `hello` (note `hello2` erred due to lack of attestation)
+  * Drill into `hello` (note `non-gcp-built-image` erred due to lack of attestation)
   * Navigate to exposed service (`/api/ping`) and show version
 * Back to Cloud Deploy [pipelines](https://console.cloud.google.com/deploy/delivery-pipelines) 
   * Show promotion and approval with manifest diffs and annotation comp (show more)
