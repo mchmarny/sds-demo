@@ -49,7 +49,9 @@ steps:
         --format '{{index .RepoDigests 0}}' > image-digest.txt
       cat image-digest.txt
 
-  # Generate SBOM (includes vulnerability scan)
+  # Generate Software Bill of Materials (SBOM).
+  # Generate SBOM file for all image layers in JSON format (SPDX schema), 
+  # and creates attestation for that container image with the SBOM as predicate
   - id: sbom
     name: us-docker.pkg.dev/cloudy-demos/builders/sbom-builder:${_SBOM_BUILDER}
     entrypoint: /bin/bash
@@ -65,7 +67,10 @@ steps:
     - |-
       builder $(cat image-digest.txt)
 
-  # Test against my vulnerability policy
+  # Test against my vulnerability policy.
+  # For stability of the demo uses a pre-built image.
+  # See the grafeas/kritis for instruction on how to build your own signer.
+  # https://github.com/grafeas/kritis/blob/master/docs/signer.md
   - id: sign
     name: us-docker.pkg.dev/cloudy-demos/kritis/signer
     entrypoint: /bin/bash
