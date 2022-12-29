@@ -78,7 +78,7 @@ steps:
       -v=10 \
       -mode=check-and-sign \
       -alsologtostderr \
-      -image=$(/bin/cat image-digest.txt) \
+      -image=$(/bin/cat app/image-digest.txt) \
       -policy=policy/vulnz-signing-policy.yaml \
       -note_name=${_NOTE_NAME} \
       -kms_key_name=${_KMS_KEY_NAME} \
