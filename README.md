@@ -141,7 +141,7 @@ kubectl apply -f test/non-gcp-built-image.yaml
 * Make some code change
   * Edit API message in `route.go`
   * Bump version number in `.version`
-* Git add, commit, push
+* Git add, commit, push:
 
 ```shell
 git add --all
@@ -149,10 +149,10 @@ git commit -m 'demo'
 git push --all
 ```
 
-* Git tag and push
+* Git tag and push, to trigger the GCB pipeline:
 
 ```shell
-export VERSION_TAG=$(cat .version)
+export VERSION_TAG=$(cat app/.version)
 git tag -s -m "demo" $VERSION_TAG
 git push origin $VERSION_TAG
 ```
