@@ -92,6 +92,7 @@ steps:
   # Sign image with attestation that it was built in GCB
   - id: sign
     name: gcr.io/${PROJECT_ID}/binauthz-attestation:latest
+    waitFor: ["scan"]
     args:
       - '--artifact-url'
       - $(/bin/cat app/image-digest.txt)
