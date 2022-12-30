@@ -113,7 +113,7 @@ steps:
     waitFor:
     - sbom
     - scan
-    - sign
+    - attest
     dir: app
     args:
     - -c
