@@ -25,7 +25,8 @@ steps:
   - id: build
     name: gcr.io/cloud-builders/docker
     entrypoint: /bin/bash
-    waitFor: ["test"]
+    waitFor:
+    - test"
     dir: app
     args:
     - -c
@@ -39,7 +40,8 @@ steps:
   - id: publish
     name: gcr.io/cloud-builders/docker
     entrypoint: /bin/bash
-    waitFor: ["build"]
+    waitFor: 
+    - build
     dir: app
     args:
     - -c
@@ -55,7 +57,8 @@ steps:
   - id: sbom
     name: us-docker.pkg.dev/cloudy-demos/builders/sbom-builder:${_SBOM_BUILDER}
     entrypoint: /bin/bash
-    waitFor: ["publish"]
+    waitFor:
+    - publish
     dir: app
     env:
     - PROJECT=$PROJECT_ID
@@ -74,7 +77,8 @@ steps:
   - id: scan
     name: us-docker.pkg.dev/cloudy-demos/kritis/signer
     entrypoint: /bin/bash
-    waitFor: ["sbom"]
+    waitFor:
+    - publish
     args:
     - -c
     - |-
@@ -89,23 +93,27 @@ steps:
       -kms_key_name=${_KMS_KEY_NAME} \
       -kms_digest_alg=${_KMS_DIGEST_ALG}
 
-  # # Sign image with attestation that it was built in GCB
-  # - id: sign
-  #   name: gcr.io/${PROJECT_ID}/binauthz-attestation:latest
-  #   waitFor: ["scan"]
-  #   args:
-  #     - '--artifact-url'
-  #     - $(/bin/cat app/image-digest.txt)
-  #     - '--attestor'
-  #     - 'projects/${PROJECT_ID}/attestors/built-by-cloud-build'
-  #     - '--keyversion'
-  #     - '${_KMS_KEY_NAME}'
+  # Sign image with attestation that it was built in GCB
+  - id: attest
+    name: us-docker.pkg.dev/cloudy-demos/binauthz/attestation
+    waitFor:
+    - publish
+    args:
+      - --artifact-url
+      - $(/bin/cat app/image-digest.txt)
+      - --attestor
+      - projects/${PROJECT_ID}/attestors/built-by-cloud-build
+      - --keyversion
+      - ${_KMS_KEY_NAME}
 
   # Create release in Google Cloud Deploy
   - id: release
     name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: /bin/bash
-    waitFor: ["scan"]
+    waitFor:
+    - sbom
+    - scan
+    - sign
     dir: app
     args:
     - -c
