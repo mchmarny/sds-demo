@@ -3,13 +3,13 @@ defaultAdmissionRule:
   enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG
   evaluationMode: ALWAYS_ALLOW
 clusterAdmissionRules:
-  us-west1-c.demo-prod:
+  CLUSTER_ZONE.CLUSTER_NAME-prod:
     enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG
     evaluationMode: REQUIRE_ATTESTATION
     requireAttestationsBy:
     - projects/PROJECT_ID/attestors/GCB_ATTESTOR
     - projects/PROJECT_ID/attestors/VULN_ATTESTOR
-  us-west1-c.demo-test:
+  CLUSTER_ZONE.CLUSTER_NAME-test:
     enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG
     evaluationMode: REQUIRE_ATTESTATION
     requireAttestationsBy:

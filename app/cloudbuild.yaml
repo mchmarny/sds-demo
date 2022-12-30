@@ -99,12 +99,9 @@ steps:
     waitFor:
     - publish
     args:
-      - --artifact-url
-      - $(/bin/cat app/image-digest.txt)
-      - --attestor
-      - projects/${PROJECT_ID}/attestors/built-by-cloud-build
-      - --keyversion
-      - ${_KMS_KEY_NAME}
+      - --artifact-url=$(cat app/image-digest.txt)
+      - --attestor=projects/${PROJECT_ID}/attestors/built-by-cloud-build
+      - --keyversion=${_KMS_KEY_NAME}
 
   # Create release in Google Cloud Deploy
   - id: release
