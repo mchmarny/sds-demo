@@ -82,7 +82,7 @@ Navigate to the triggers page
 
 https://console.cloud.google.com/cloud-build/triggers
 
-> Make sure to set the region to `us-west1` at the top left of the screen.
+> Make sure to set the region to your region (default: `us-west1`) at the top left of the screen.
 
 Go through the `Connect Repository` flow. The important bits:
 
