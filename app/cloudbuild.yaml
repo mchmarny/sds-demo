@@ -26,7 +26,7 @@ steps:
     name: gcr.io/cloud-builders/docker
     entrypoint: /bin/bash
     waitFor:
-    - test"
+    - test
     dir: app
     args:
     - -c
