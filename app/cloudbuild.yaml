@@ -71,7 +71,7 @@ steps:
   # For stability of the demo uses a pre-built image.
   # See the grafeas/kritis for instruction on how to build your own signer.
   # https://github.com/grafeas/kritis/blob/master/docs/signer.md
-  - id: sign
+  - id: scan
     name: us-docker.pkg.dev/cloudy-demos/kritis/signer
     entrypoint: /bin/bash
     waitFor: ["sbom"]
@@ -88,6 +88,17 @@ steps:
       -note_name=${_NOTE_NAME} \
       -kms_key_name=${_KMS_KEY_NAME} \
       -kms_digest_alg=${_KMS_DIGEST_ALG}
+
+  # Sign image with attestation that it was built in GCB
+  - id: sign
+    name: gcr.io/${PROJECT_ID}/binauthz-attestation:latest
+    args:
+      - '--artifact-url'
+      - $(/bin/cat app/image-digest.txt)
+      - '--attestor'
+      - 'projects/${PROJECT_ID}/attestors/built-by-cloud-build'
+      - '--keyversion'
+      - '${_KMS_KEY_NAME}'
 
   # Create release in Google Cloud Deploy
   - id: release
