@@ -15,7 +15,3 @@ dist
 # Keys 
 cosign.*
 *.pem
-
-# Generated Artifacts 
-app/clouddeploy.yaml
-policy/attestor-policy.yaml
