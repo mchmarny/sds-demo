@@ -137,7 +137,7 @@ kubectl apply -f test/non-gcp-built-image.yaml
   * Built in Cloud Build (attested with KMS key signature)
   * Show dry run and images exempt option on policy as a means to incremental rollout strategy
 
-![](images/gke-bad.png)
+![](images/app-bad.png)
 
 ### Build on Tag (end-to-end demo)
 
@@ -185,8 +185,8 @@ git push origin $VERSION_TAG
 * Navigate to GKE [workloads](https://console.cloud.google.com/kubernetes/workload/overview)
   * Drill into `hello` (note `non-gcp-built-image` erred due to lack of attestation)
   * Navigate to exposed service (`/api/ping`) and show version
-  
-![](images/gke-bad.png)
+
+![](images/app-good.png)
 
 * Back to Cloud Deploy [pipelines](https://console.cloud.google.com/deploy/delivery-pipelines) 
   * Show promotion and approval with manifest diffs and annotation comp (show more)
