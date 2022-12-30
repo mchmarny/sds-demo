@@ -82,7 +82,6 @@ steps:
     args:
     - -c
     - |-
-      /bin/cat policy/vulnz-signing-policy.yaml
       /kritis/signer \
       -v=10 \
       -mode=check-and-sign \
@@ -102,11 +101,10 @@ steps:
     args:
     - -c
     - |-
-      echo "attesting:" $(cat app/image-digest.txt)
       gcloud beta container binauthz attestations sign-and-create \
-        --attestor=projects/${PROJECT_ID}/attestors/built-by-cloud-build \
-        --artifact-url=$(cat app/image-digest.txt) \
-        --keyversion=${_KMS_KEY_NAME}
+        --attestor projects/${PROJECT_ID}/attestors/built-by-cloud-build \
+        --artifact-url $(cat app/image-digest.txt) \
+        --keyversion ${_KMS_KEY_NAME}
 
   # Create release in Google Cloud Deploy
   - id: release
