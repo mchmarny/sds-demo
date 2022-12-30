@@ -76,19 +76,22 @@ gcloud container clusters list --filter="resourceLabels.demo:build"
 
 ### Configure GCB Trigger 
 
-Navigate to the triggers page, and go through the `Connect Repository` flow:
-
 > The OAuth bit can't be scripted, so we have to do this manually.
+
+Navigate to the triggers page
 
 https://console.cloud.google.com/cloud-build/triggers
 
-The important bits:
+> Make sure to set the region to `us-west1` at the top left of the screen.
+
+Go through the `Connect Repository` flow. The important bits:
 
 * **Select source**: GitHub (Cloud Build GitHub App)
 * Select repository
   * **GitHub Account**: this is your GitHub Username (should be populated after successful auth)
   * **Repository**: the newly cloned repo (`your-github-username/cloudbuild-demo`)
 * **Create a trigger**: click DONE (we will script that part next)
+
 
 #### Create Trigger
 
