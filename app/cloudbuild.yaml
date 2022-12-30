@@ -75,7 +75,7 @@ steps:
   # See the grafeas/kritis for instruction on how to build your own signer.
   # https://github.com/grafeas/kritis/blob/master/docs/signer.md
   - id: scan
-    name: us-docker.pkg.dev/cloudy-demos/kritis/signer
+    name: us-west1-docker.pkg.dev/cloudy-demos/tools/kritis-signer
     entrypoint: /bin/bash
     waitFor:
     - publish
