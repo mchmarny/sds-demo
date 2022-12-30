@@ -185,6 +185,9 @@ git push origin $VERSION_TAG
 * Navigate to GKE [workloads](https://console.cloud.google.com/kubernetes/workload/overview)
   * Drill into `hello` (note `non-gcp-built-image` erred due to lack of attestation)
   * Navigate to exposed service (`/api/ping`) and show version
+  
+![](images/gke-bad.png)
+
 * Back to Cloud Deploy [pipelines](https://console.cloud.google.com/deploy/delivery-pipelines) 
   * Show promotion and approval with manifest diffs and annotation comp (show more)
 
