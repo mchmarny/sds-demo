@@ -24,6 +24,8 @@ This repo bootstraps a full CI/CD pipeline on Google Cloud to demonstrate policy
 
 Start by forking [this repo](https://github.com/mchmarny/cloudbuild-demo) into your GitHub Account. Navigate to https://github.com/mchmarny/cloudbuild-demo and click fork.
 
+![](images/fork.png)
+
 Next, clone that repo locally: 
 
 ```shell
