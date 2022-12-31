@@ -53,7 +53,7 @@ steps:
   # Generate SBOM file for all image layers in JSON format (SPDX schema), 
   # and creates attestation for that container image with the SBOM as predicate
   - id: sbom
-    name: us-docker.pkg.dev/cloudy-tools/builders/sbominator@sha256:d863f7bdf10e63f9f43298e73aad5886b87245827497b8333c038d6c1d2bdc58
+    name: us-docker.pkg.dev/cloudy-tools/builders/sbominator@sha256:508ebd72e7b83fa3db15419820afa2c8eeff9be2111dd42bb7980c2fdddfd0f4
     entrypoint: /bin/bash
     waitFor:
     - publish
