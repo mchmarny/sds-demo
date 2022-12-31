@@ -28,63 +28,41 @@ gcloud services enable \
   run.googleapis.com \
   servicenetworking.googleapis.com
 
+
 # set up IAM roles for Cloud Build service account
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-  --role roles/containeranalysis.notes.editor
+declare -a cloudbuild_roles=(
+  "roles/containeranalysis.notes.editor"
+  "roles/containeranalysis.notes.occurrences.viewer"
+  "roles/containeranalysis.occurrences.editor"
+  "roles/binaryauthorization.attestorsViewer"
+  "roles/cloudkms.cryptoKeyDecrypter"
+  "roles/cloudkms.signerVerifier"
+  "roles/containeranalysis.notes.attacher"
+  "roles/clouddeploy.operator"
+  "roles/cloudkms.admin" # TODO: scope this down
+)
 
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-  --role roles/containeranalysis.notes.occurrences.viewer
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-  --role roles/containeranalysis.occurrences.editor
-
-# KMS and attestation
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-  --role roles/binaryauthorization.attestorsViewer
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-  --role roles/cloudkms.cryptoKeyDecrypter
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-  --role roles/cloudkms.signerVerifier
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-  --role roles/containeranalysis.notes.attacher
-
-# TODO: scope this down based on https://github.com/sigstore/cosign/blob/main/KMS.md
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-  --role roles/cloudkms.admin
+for r in "${cloudbuild_roles[@]}"
+do
+  gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
+    --role $r
+done
 
 # deploy
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
-  --role roles/clouddeploy.operator
+declare -a clouddeploy_roles=(
+  "roles/clouddeploy.releaser"
+  "roles/iam.serviceAccountUser"
+  "roles/clouddeploy.jobRunner"
+  "roles/container.developer"
+)
 
-gcloud projects add-iam-policy-binding $PROJECT_ID \
+for r in "${clouddeploy_roles[@]}"
+do
+  gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
-    --role roles/clouddeploy.releaser
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
-    --role roles/iam.serviceAccountUser
-
-# add the clouddeploy.jobRunner role to your compute service account
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
-    --role roles/clouddeploy.jobRunner
-
-# add the Kubernetes developer permission:
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com \
-    --role roles/container.developer
+    --role $r
+done
 
 # update templates 
 sed -e "s/PROJECT_ID/${PROJECT_ID}/" \
