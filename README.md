@@ -125,13 +125,26 @@ https://console.cloud.google.com/cloud-build/settings/service-account
 
 ### Attestation Validation
 
-Deploy sample image that **was not built in GCP**. The `apply` command will work because Kubernetes is declarative but as we will see in a minute, the workflow will fail to deploy.
+Deploy sample image that **was not built in GCP**. First, get the configuration with which the demo clusters were configured:
+
+```shell
+. setup/config
+```
+
+Next, get the `test` cluster credentials:
+
+```shell
+gcloud container clusters get-credentials demo-test --region $CLUSTER_ZONE
+```
+
+Then `apply` command will work because Kubernetes is declarative but as we will see in a minute, the workflow will fail to deploy.
 
 ```shell
 kubectl apply -f test/non-gcp-built-image.yaml
 ```
 
-* Navigate to GKE [workloads](https://console.cloud.google.com/kubernetes/workload/overview), and show how `non-gcp-built-image` failed to deploy due to lack of attestation (use cluster/namespace filters)
+* Navigate to GKE [workloads](https://console.cloud.google.com/kubernetes/workload/overview), and show how `non-gcp-built-image` failed to deploy due to lack of attestation (use cluster/namespace filters  if needed).
+  * The error should have names of the two attestors that valid deployments need to have in this cluster: `built-by-cloud-build` and `vulnz-attestor`
 * Navigate to Security Policy and show [BinAuth Policy](https://console.cloud.google.com/security/binary-authorization/policy) rules
   * Vulnerability attestation (scanned and signed with KMS key)
   * Built in Cloud Build (attested with KMS key signature)
@@ -143,8 +156,7 @@ kubectl apply -f test/non-gcp-built-image.yaml
 
 * Show delivery pipeline config `app/clouddeploy.yaml`
 * Make some code change
-  * Edit API message in `route.go`
-  * Bump version number in `.version`
+  * Make sure you bump version number in `.version`
 * Git add, commit, push:
 
 ```shell
