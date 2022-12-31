@@ -95,6 +95,7 @@ sed -e "s/PROJECT_ID/${PROJECT_ID}/" \
 sed -e "s/PROJECT_ID/${PROJECT_ID}/" \
     -e "s/GCB_ATTESTOR/${GCB_ATTESTOR_ID}/" \
     -e "s/VULN_ATTESTOR/${VULN_ATTESTOR_ID}/" \
+    -e "s/SBOM_ATTESTOR/${SBOM_ATTESTOR_ID}/" \
     -e "s/CLUSTER_NAME/${CLUSTER_NAME}/" \
     -e "s/CLUSTER_ZONE/${CLUSTER_ZONE}/" \
     templates/template.attestor-policy.yaml > policy/attestor-policy.yaml

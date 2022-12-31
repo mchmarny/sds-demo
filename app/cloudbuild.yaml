@@ -4,9 +4,7 @@
 substitutions:
   _APP_NAME: hello
   _PIPELINE_NAME: deploy-demo-pipeline
-  _POOL_NAME: demo-pool
   _GO_VERSION: "1.19"
-  _SBOM_BUILDER: v0.3.7
 
 steps:
   # Go test
@@ -55,7 +53,7 @@ steps:
   # Generate SBOM file for all image layers in JSON format (SPDX schema), 
   # and creates attestation for that container image with the SBOM as predicate
   - id: sbom
-    name: us-docker.pkg.dev/cloudy-demos/builders/sbom-builder:${_SBOM_BUILDER}
+    name: us-docker.pkg.dev/cloudy-tools/builders/sbominator@sha256:d863f7bdf10e63f9f43298e73aad5886b87245827497b8333c038d6c1d2bdc58
     entrypoint: /bin/bash
     waitFor:
     - publish
@@ -65,6 +63,7 @@ steps:
     - KEY=$_KMS_KEY_NAME
     - COMMIT=$COMMIT_SHA
     - VERSION=$TAG_NAME
+    - ATTESTOR=$_BIN_AUTHZ_ID
     args:
     - -c
     - |-

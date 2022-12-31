@@ -9,12 +9,14 @@ clusterAdmissionRules:
     requireAttestationsBy:
     - projects/PROJECT_ID/attestors/GCB_ATTESTOR
     - projects/PROJECT_ID/attestors/VULN_ATTESTOR
+    - projects/PROJECT_ID/attestors/SBOM_ATTESTOR
   CLUSTER_ZONE.CLUSTER_NAME-test:
     enforcementMode: ENFORCED_BLOCK_AND_AUDIT_LOG
     evaluationMode: REQUIRE_ATTESTATION
     requireAttestationsBy:
     - projects/PROJECT_ID/attestors/GCB_ATTESTOR
     - projects/PROJECT_ID/attestors/VULN_ATTESTOR
+    - projects/PROJECT_ID/attestors/SBOM_ATTESTOR
 admissionWhitelistPatterns:
 - namePattern: us.gcr.io/google-containers/**
 - namePattern: gcr.io/google_containers/**

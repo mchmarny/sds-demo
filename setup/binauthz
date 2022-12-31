@@ -8,6 +8,7 @@ set -o pipefail
 
 # setup vulnerability and builder attestors
 setup/attestor $GCB_ATTESTOR_ID
+setup/attestor $SBOM_ATTESTOR_ID
 setup/attestor $VULN_ATTESTOR_ID
 
 # setup policy 
