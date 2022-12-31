@@ -40,11 +40,29 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
   --role roles/containeranalysis.occurrences.editor
 
+# KMS and attestation
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
+  --role roles/binaryauthorization.attestorsViewer
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
+  --role roles/cloudkms.cryptoKeyDecrypter
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
+  --role roles/cloudkms.signerVerifier
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
+  --role roles/containeranalysis.notes.attacher
+
 # TODO: scope this down based on https://github.com/sigstore/cosign/blob/main/KMS.md
 gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
   --role roles/cloudkms.admin
 
+# deploy
 gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com \
   --role roles/clouddeploy.operator
