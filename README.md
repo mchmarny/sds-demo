@@ -182,30 +182,57 @@ git push origin $VERSION_TAG
 
 * Navigate to Cloud Build [builds](https://console.cloud.google.com/cloud-build/builds) in UI
   * Drill on active build 
-  * Review steps (test, build, publish, scan, sign, sbom, release)
+  * Review steps (show sbom, scan, and attest running concurrently):
+    * test - tests the code one more time
+    * build - builds a docker image
+    * publish - publishes that image to Artifact Registry
+    * sbom - generates Software Bill of Materials for the published image
+    * scan - scans image for culnerabilities (note: this step will fail if scanner finds vulnerabilities with severity higher than the max defined in `policy/vulnz-signing-policy.yaml`)
+    * attest - creates and publishes attestation that this iamge was built in GCB using KMS key
+    * release - deploys the image via Cloud Deploy
   * On Build Summary, show Build Artifacts > Image security insights ([SLSA Build Level 3](https://slsa.dev/spec/v0.1/levels))
+    * Show `Dependencies` and `Build Provenance` YAMLs
 
 ![](images/build.png)
+
+* Navigate to Artifact Registry [list of registries](https://console.cloud.google.com/artifacts)
+  * Drill into `cloudbuild-demo/hello`
+  * Show attestation and signature artifacts (`*.att` and `*.sig`)
+  * Navigate to Manifest in `*.sig`, show cosign/signature
+  * Navigate to the image (the one with the `v*` tag) and show Vulnerabilities
+
+![](images/vulns.png)
+
+> Make sure the Cloud Build job completed before proceeding.
 
 * Navigate to Cloud Deploy [pipelines](https://console.cloud.google.com/deploy/delivery-pipelines)
   * Drill into `deploy-demo-pipeline`
   * Show 2 environments (test, prod)
-  * Drill into the latest release 
+  * Drill into release, rollouts, and targets 
 
 ![](images/deploy.png)
 
 * Navigate to GKE [workloads](https://console.cloud.google.com/kubernetes/workload/overview)
   * Drill into `hello` (note `non-gcp-built-image` erred due to lack of attestation)
-  * Navigate to exposed service (`/api/ping`) and show version
+  * Navigate to exposed `hello` service at the bottom 
+  * Click on endpoint, and show version using `/api/ping` (should be same as the version in `.version` file in the repo)
 
 ![](images/app-good.png)
 
 * Back to Cloud Deploy [pipelines](https://console.cloud.google.com/deploy/delivery-pipelines) 
-  * Show promotion and approval with manifest diffs and annotation comp (show more)
+  * Show promotion, review, and approval with manifest diffs and annotation comp (show more)
 
 ![](images/approve.png)
 
+* Navigate to Binary Authorization [policy](https://console.cloud.google.com/security/binary-authorization/policy)
+  * Show cluster specific rules, and edit policy
+  * Show Custom exemption rules
+  * Show GKE cluster-specific rules
+
+![](images/binauthz.png)
+
 * Show GKE [Security Posture](https://console.cloud.google.com/kubernetes/security/dashboard)
+  * Show concerns (note: there may not be much, if you are using brand new project for this demo)
 
 ![](images/posture.png)
 

@@ -24,6 +24,7 @@ gcloud services enable \
   container.googleapis.com \
   containerregistry.googleapis.com \
   containerscanning.googleapis.com \
+  containersecurity.googleapis.com \
   run.googleapis.com \
   servicenetworking.googleapis.com
 
