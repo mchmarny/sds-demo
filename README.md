@@ -133,11 +133,10 @@ Deploy sample image that **was not built in GCP**. First, get the configuration 
 . setup/config
 ```
 
-Next, get the `test` cluster credentials and set the cluster:
+Next, get the `test` cluster credentials:
 
 ```shell
 gcloud container clusters get-credentials demo-test --region $CLUSTER_ZONE
-kubectl config set-cluster demo-test
 ```
 
 Then `apply` command will work because Kubernetes is declarative but as we will see in a minute, the workflow will fail to deploy.
