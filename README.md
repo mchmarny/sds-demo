@@ -133,9 +133,10 @@ Deploy sample image that **was not built in GCP**. First, get the configuration 
 . setup/config
 ```
 
-Next, set the cluster:
+Next, get the `test` cluster credentials and set the cluster:
 
 ```shell
+gcloud container clusters get-credentials demo-test --region $CLUSTER_ZONE
 kubectl config set-cluster demo-test
 ```
 
