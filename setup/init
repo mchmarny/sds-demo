@@ -23,12 +23,13 @@ gcloud services enable \
   clouddeploy.googleapis.com \
   cloudkms.googleapis.com \
   cloudresourcemanager.googleapis.com \
+  compute.googleapis.com \
   container.googleapis.com \
   containerregistry.googleapis.com \
   containerscanning.googleapis.com \
   containersecurity.googleapis.com \
   run.googleapis.com \
-  servicenetworking.googleapis.com
+  servicenetworking.googleapis.com 
 
 
 # set up IAM roles for Cloud Build service account
