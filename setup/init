@@ -10,6 +10,8 @@ set -o pipefail
 gcloud config set project $PROJECT_ID
 gcloud config set artifacts/location $REGION
 gcloud config set deploy/region $REGION
+gcloud config set compute/region $REGION
+gcloud config set compute/zone $CLUSTER_ZONE
 
 echo "Iniatializing project $PROJECT_ID in region $REGION..."
 
