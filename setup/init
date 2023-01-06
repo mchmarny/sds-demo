@@ -6,14 +6,8 @@ DIR="$(dirname "$0")"
 set -o errexit
 set -o pipefail
 
-# configure defaults 
+# configure project 
 gcloud config set project $PROJECT_ID
-gcloud config set artifacts/location $REGION
-gcloud config set deploy/region $REGION
-gcloud config set compute/region $REGION
-gcloud config set compute/zone $CLUSTER_ZONE
-
-echo "Iniatializing project $PROJECT_ID in region $REGION..."
 
 # enables APIs
 gcloud services enable \
@@ -29,7 +23,16 @@ gcloud services enable \
   containerscanning.googleapis.com \
   containersecurity.googleapis.com \
   run.googleapis.com \
-  servicenetworking.googleapis.com 
+  servicenetworking.googleapis.com
+
+# configue defaults
+gcloud config set artifacts/location $REGION
+gcloud config set deploy/region $REGION
+# NOTE: These config changes need the compute API to be already enabled.
+gcloud config set compute/region $REGION
+gcloud config set compute/zone $CLUSTER_ZONE
+
+echo "Iniatializing project $PROJECT_ID in region $REGION..."
 
 
 # set up IAM roles for Cloud Build service account
