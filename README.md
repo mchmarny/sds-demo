@@ -158,7 +158,7 @@ kubectl apply -f test/non-gcp-built-image.yaml
 
 * Show delivery pipeline config `app/clouddeploy.yaml`
 * Make some code change
-  * Make sure you bump version number in `.version`
+  * Make sure you bump version number in `app/.version`
 * Git add, commit, push:
 
 ```shell
