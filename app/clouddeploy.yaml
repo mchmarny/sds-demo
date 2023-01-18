@@ -15,7 +15,7 @@ metadata:
   name: demo-test
 description: test cluster
 gke:
-  cluster: projects/cloudy-test1/locations/us-west1-c/clusters/demo-test
+  cluster: projects/cloudy-test/locations/us-west1-c/clusters/demo-test
 ---
 
 apiVersion: deploy.cloud.google.com/v1
@@ -25,4 +25,4 @@ metadata:
 description: prod cluster
 requireApproval: true
 gke:
-  cluster: projects/cloudy-test1/locations/us-west1-c/clusters/demo-prod
+  cluster: projects/cloudy-prod/locations/us-west1-c/clusters/demo-prod
