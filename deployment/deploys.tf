@@ -14,7 +14,7 @@ resource "google_service_account" "deployer_sa" {
   display_name = "Image Deployer Service Account"
 }
 
-resource "google_project_iam_member" "builder_role_binding" {
+resource "google_project_iam_member" "deployer_role_binding" {
   for_each = local.deployer_roles
   project  = data.google_project.project.project_id
   role     = each.value

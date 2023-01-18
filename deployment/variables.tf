@@ -23,9 +23,3 @@ variable "zone" {
   type        = string
   nullable    = false
 }
-
-variable "node_type" {
-  description = "GKE Node Type"
-  type        = string
-  default     = "e2-medium"
-}

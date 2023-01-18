@@ -5,23 +5,27 @@ output "PROJECT_ID" {
   description = "GCP project ID."
 }
 
-output "PROHECT_NUMBER" {
+output "PROJECT_NUMBER" {
   value       = data.google_project.project.number
   description = "GCP project number."
 }
 
-output "PROHECT_REGION" {
+output "PROJECT_REGION" {
   value       = var.region
   description = "GCP project region."
 }
 
-output "TEKTON_BUILDER_SA" {
-  value       = var.builder_sa
-  description = "GCP service account executing Tekton builds"
+output "BUILDER_SA" {
+  value       = google_service_account.builder_sa.email
+  description = "GCP service account under which Cloud Build runs"
 }
 
-output "TEKTON_VERIFIER_SA" {
-  value       = var.verifier_sa
-  description = "GCP service account use to invoke image verifications"
+output "DEPLOYER_SA" {
+  value       = google_service_account.deployer_sa.email
+  description = "GCP service account under which Cloud Deploy runs"
 }
 
+output "RUNNER_SA" {
+  value       = google_service_account.runner_sa.email
+  description = "GCP service account under which GKE runs"
+}

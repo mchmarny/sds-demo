@@ -31,6 +31,10 @@ resource "google_kms_crypto_key" "key" {
   }
 }
 
+data "google_kms_crypto_key_version" "key_version" {
+  crypto_key = google_kms_crypto_key.key.id
+}
+
 resource "google_kms_crypto_key_iam_binding" "builder_key_binding" {
     for_each      = local.attestation_roles
     crypto_key_id = google_kms_crypto_key.key.id
