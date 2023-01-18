@@ -26,7 +26,7 @@ resource "google_binary_authorization_attestor_iam_binding" "builder_binding" {
   attestor = google_binary_authorization_attestor.builder_attestor.name
   role     = "roles/binaryauthorization.attestorsViewer"
   members = [
-    "serviceAccount:${google_service_account.builder_sa.email}",
+    "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com",
   ]
 }
 

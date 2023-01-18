@@ -15,10 +15,10 @@ This repo bootstraps a full CI/CD pipeline on Google Cloud to demonstrate policy
 
 ## Requirements 
 
+* GCP project with billing account
 * [gcloud](https://cloud.google.com/sdk/docs/install)
 * [jq](https://stedolan.github.io/jq/download/)
 
-## Setup 
 
 ### Setup Environment  
 
@@ -33,95 +33,41 @@ git clone git@github.com:<your-github-username>/cloudbuild-demo.git
 cd cloudbuild-demo
 ```
 
-### Provision Resources 
+### Connect GitHub Repository 
 
-To deploy this pipeline into your GCP project, you will also need to export the ID of target project:
+There is one aspect of the deployment that can't be completed with Terraform. The connection to repo uses OAuth flow which has to be completed by an actual user. Before executing the Terraform deployment, make sure to complete the following steps: 
 
-```shell
-export PROJECT_ID=<your-project-id-here>
-```
+* Navigate to Cloud Build https://console.cloud.google.com/cloud-build
+* Enable the API 
+* Navigate to Connect Repository https://console.cloud.google.com/cloud-build/repos
+  * Make sure you are using the correct **project/region** at the top left of the screen.
+* Click `Connect Repository` to start the flow: 
+  * **Select source**: GitHub (Cloud Build GitHub App)
+  * Select repository
+    * **GitHub Account**: this is your GitHub Username (should be populated after successful auth)
+    * **Repository**: the newly cloned repo (`your-github-username/cloudbuild-demo`)
+  * **Create a trigger**: click DONE (we will script that part next)
 
-Next, create the required GCP resources (KMS, Artifact Registry repo, and service account policies):
+### Run Deployment 
 
-```shell
-setup/init
-```
-
-Create GKE cluster:
-
-```shell
-setup/clusters
-```
-
-And, configure Binary Authorization:
+Initialize Terraform (this is a one time step)
 
 ```shell
-setup/binauthz
+terraform -chdir=./deployment init
 ```
 
-Next, trust all Google-provided system images in UI (bottom):
+Next, apply the deployment to your project. When prompted, provide the requested information or use the defaults: 
 
-https://console.cloud.google.com/security/binary-authorization/policy/edit
-
-* Expand `Additional settings for GKE and Anthos deployments`
-* Check `Trust all Google-provided system images`
-
-> Still have not been able to figure out how to enable this programmatically.
-
-Wait for cluster to be created:
-
-> When ready, status will change from `PROVISIONING` to `RUNNING`
+* `root_name`         - used to contextualize all the resources created in the target project (default: `demo`)
+* `project_id`        - target GPC project ID (not the name, although these can be the same)
+* `region`            - target GCP region (default: `us-west1`)
+* `zone`              - target GCP region zone, used for GCP cluster placement (default: `c`)
+* `github_repo_owner` - your GitHub username (`https://github.com/<username>`)
+* `github_repo_name`  - the name of the forked repo (default: `cloudbuild-demo`)
 
 ```shell
-gcloud container clusters list --filter="resourceLabels.demo:build"
+terraform -chdir=./deployment apply -auto-approve
 ```
-
-### Configure GCB Trigger 
-
-> The OAuth bit can't be scripted, so we have to do this manually.
-
-Navigate to the triggers page
-
-https://console.cloud.google.com/cloud-build/triggers
-
-> Make sure to set the region to your region (default: `us-west1`) at the top left of the screen.
-
-Go through the `Connect Repository` flow. The important bits:
-
-* **Select source**: GitHub (Cloud Build GitHub App)
-* Select repository
-  * **GitHub Account**: this is your GitHub Username (should be populated after successful auth)
-  * **Repository**: the newly cloned repo (`your-github-username/cloudbuild-demo`)
-* **Create a trigger**: click DONE (we will script that part next)
-
-
-#### Create Trigger
-
-Create the GCP worker pool and the trigger on tag in the cloned app repo:
-
-> Make sure to replace the `your-github-username` with your GitHub username.
-
-```shell
-setup/trigger <your-github-username>
-```
-
-Check that the trigger has been created: 
-
-https://console.cloud.google.com/cloud-build/triggers
-
-#### Enable Permissions 
-
-Finally, navigate to GCB settings, and enable following permissions: 
-
-> This is used in the demo later.
-
-* Kubernetes Engine
-* Cloud KMS
-* Service Accounts
-* Cloud Build
-
-https://console.cloud.google.com/cloud-build/settings/service-account
-
 
 ## Demo
 

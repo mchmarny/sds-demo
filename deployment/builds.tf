@@ -16,18 +16,11 @@ locals {
   ])
 }
 
-# Create builder_sa. Used to builder_sa all GCP API invications during build.
-resource "google_service_account" "builder_sa" {
-  account_id   = "${var.root_name}-builder-sa"
-  display_name = "Builder Service Account"
-}
-
-
 resource "google_project_iam_member" "builder_role_binding" {
   for_each = local.builder_roles
   project  = data.google_project.project.project_id
   role     = each.value
-  member   = "serviceAccount:${google_service_account.builder_sa.email}"
+  member   = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
 }
 
 resource "google_cloudbuild_worker_pool" "pool" {

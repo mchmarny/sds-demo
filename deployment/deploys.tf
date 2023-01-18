@@ -8,17 +8,11 @@ locals {
   ])
 }
 
-# Set up deploy_sa. Used to verify built images.
-resource "google_service_account" "deployer_sa" {
-  account_id   = "${var.root_name}-deployer-sa"
-  display_name = "Image Deployer Service Account"
-}
-
 resource "google_project_iam_member" "deployer_role_binding" {
   for_each = local.deployer_roles
   project  = data.google_project.project.project_id
   role     = each.value
-  member   = "serviceAccount:${google_service_account.deployer_sa.email}"
+  member   = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-clouddeploy.iam.gserviceaccount.com"
 }
 
 resource "google_clouddeploy_target" "test_target" {

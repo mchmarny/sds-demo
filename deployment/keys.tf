@@ -41,7 +41,7 @@ resource "google_kms_crypto_key_iam_binding" "builder_key_binding" {
   role          = each.value
 
   members = [
-    "serviceAccount:${google_service_account.builder_sa.email}",
+    "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com",
   ]
 }
 
