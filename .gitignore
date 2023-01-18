@@ -22,3 +22,7 @@ cosign.*
 *.hcl
 .terraform
 *.backup
+
+# Templates files 
+app/clouddeploy.yaml
+policy/attestor-policy.yaml
