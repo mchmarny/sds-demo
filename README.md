@@ -65,6 +65,7 @@ https://console.cloud.google.com/security/binary-authorization/policy/edit
 
 * Expand `Additional settings for GKE and Anthos deployments`
 * Check `Trust all Google-provided system images`
+* Click `SAVE POLICY`
 
 > Still have not been able to figure out how to enable this programmatically.
 
@@ -73,7 +74,7 @@ Wait for cluster to be created:
 > When ready, status will change from `PROVISIONING` to `RUNNING`
 
 ```shell
-gcloud container clusters list --filter="resourceLabels.demo:build"
+watch gcloud container clusters list --filter="resourceLabels.demo:build"
 ```
 
 ### Configure GCB Trigger 
