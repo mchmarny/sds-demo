@@ -29,3 +29,8 @@ output "RUNNER_SA" {
   value       = google_service_account.runner_sa.email
   description = "GCP service account under which GKE runs"
 }
+
+output "GITHUB_REPO" {
+  value       = "${var.github_repo_owner}/${var.github_repo_name}"
+  description = "Fully qualified GitHub repo that will trigger Cloud Build"
+}

@@ -33,8 +33,8 @@ resource "google_service_account_iam_member" "test_cluster_role_binding" {
 
 # Test cluster
 resource "google_container_cluster" "test_cluster" {
-  name     = "${var.root_name}-test"
-  location = "${var.region}-${var.zone}"
+  name                     = "${var.root_name}-test"
+  location                 = "${var.region}-${var.zone}"
   remove_default_node_pool = true
   initial_node_count       = 1
 
@@ -93,7 +93,7 @@ resource "google_container_node_pool" "test_cluster_nodes" {
   node_config {
     machine_type    = "e2-medium"
     service_account = google_service_account.runner_sa.email
-    
+
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
     ]
@@ -101,7 +101,7 @@ resource "google_container_node_pool" "test_cluster_nodes" {
     workload_metadata_config {
       mode = "GKE_METADATA"
     }
- 
+
     labels = {
       "environment" = "demo"
       "demo"        = "build"
@@ -122,8 +122,8 @@ resource "google_container_node_pool" "test_cluster_nodes" {
 
 # Test cluster
 resource "google_container_cluster" "prod_cluster" {
-  name     = "${var.root_name}-prod"
-  location = "${var.region}-${var.zone}"
+  name                     = "${var.root_name}-prod"
+  location                 = "${var.region}-${var.zone}"
   remove_default_node_pool = true
   initial_node_count       = 1
 
@@ -182,7 +182,7 @@ resource "google_container_node_pool" "prod_cluster_nodes" {
   node_config {
     machine_type    = "e2-medium"
     service_account = google_service_account.runner_sa.email
-    
+
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
     ]
@@ -190,7 +190,7 @@ resource "google_container_node_pool" "prod_cluster_nodes" {
     workload_metadata_config {
       mode = "GKE_METADATA"
     }
- 
+
     labels = {
       "environment" = "demo"
       "demo"        = "build"

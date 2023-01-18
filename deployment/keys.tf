@@ -36,21 +36,21 @@ data "google_kms_crypto_key_version" "key_version" {
 }
 
 resource "google_kms_crypto_key_iam_binding" "builder_key_binding" {
-    for_each      = local.attestation_roles
-    crypto_key_id = google_kms_crypto_key.key.id
-    role          = each.value
+  for_each      = local.attestation_roles
+  crypto_key_id = google_kms_crypto_key.key.id
+  role          = each.value
 
-    members = [
-        "serviceAccount:${google_service_account.builder_sa.email}",
-    ]
+  members = [
+    "serviceAccount:${google_service_account.builder_sa.email}",
+  ]
 }
 
 resource "google_kms_crypto_key_iam_binding" "runner_key_binding" {
-    for_each      = local.attestation_roles
-    crypto_key_id = google_kms_crypto_key.key.id
-    role          = each.value
+  for_each      = local.attestation_roles
+  crypto_key_id = google_kms_crypto_key.key.id
+  role          = each.value
 
-    members = [
-        "serviceAccount:${google_service_account.runner_sa.email}",
-    ]
+  members = [
+    "serviceAccount:${google_service_account.runner_sa.email}",
+  ]
 }

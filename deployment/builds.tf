@@ -29,3 +29,36 @@ resource "google_project_iam_member" "builder_role_binding" {
   role     = each.value
   member   = "serviceAccount:${google_service_account.builder_sa.email}"
 }
+
+resource "google_cloudbuild_worker_pool" "pool" {
+  name     = "${var.root_name}-pool"
+  location = var.region
+  worker_config {
+    disk_size_gb   = 100
+    machine_type   = "e2-standard-2"
+    no_external_ip = false
+  }
+}
+
+resource "google_cloudbuild_trigger" "build_trigger" {
+  name     = "${var.root_name}-build-trigger"
+  location = var.region
+
+  github {
+    owner = var.github_repo_owner
+    name  = var.github_repo_name
+    push {
+      tag = "v*"
+    }
+  }
+
+  substitutions = {
+    _KMS_DIGEST_ALG = "SHA512"
+    _KMS_KEY_NAME   = data.google_kms_crypto_key_version.key_version.id
+    _NOTE_NAME      = google_container_analysis_note.builder_note.name
+    _BIN_AUTHZ_ID   = google_binary_authorization_attestor.builder_attestor.name
+    _POOL_NAME      = google_cloudbuild_worker_pool.pool.name
+  }
+
+  filename = "app/cloudbuild.yaml"
+}

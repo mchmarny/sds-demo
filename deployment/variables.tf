@@ -23,3 +23,15 @@ variable "zone" {
   type        = string
   nullable    = false
 }
+
+variable "github_repo_owner" {
+  description = "The owner of the GitHub repo"
+  type        = string
+  nullable    = false
+}
+
+variable "github_repo_name" {
+  description = "The name of the GitHub repo"
+  type        = string
+  nullable    = false
+}

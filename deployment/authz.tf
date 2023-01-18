@@ -22,9 +22,9 @@ resource "google_binary_authorization_attestor" "builder_attestor" {
 }
 
 resource "google_binary_authorization_attestor_iam_binding" "builder_binding" {
-  project = google_binary_authorization_attestor.builder_attestor.project
+  project  = google_binary_authorization_attestor.builder_attestor.project
   attestor = google_binary_authorization_attestor.builder_attestor.name
-  role = "roles/binaryauthorization.attestorsViewer"
+  role     = "roles/binaryauthorization.attestorsViewer"
   members = [
     "serviceAccount:${google_service_account.builder_sa.email}",
   ]
