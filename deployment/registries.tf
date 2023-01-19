@@ -11,6 +11,7 @@ resource "google_artifact_registry_repository_iam_binding" "binding" {
   repository = google_artifact_registry_repository.registry.name
   role       = "roles/artifactregistry.repoAdmin"
   members = [
-    "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com",
+    format("serviceAccount:%s@cloudbuild.gserviceaccount.com",
+    data.google_project.project.number),
   ]
 }

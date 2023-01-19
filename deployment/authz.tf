@@ -1,5 +1,6 @@
 resource "google_container_analysis_note" "builder_note" {
-  name = "${var.root_name}-builder-note"
+  project = var.project_id
+  name = format("%s-builder-note", var.root_name)
   attestation_authority {
     hint {
       human_readable_name = "GCB Builder Attestor Note"
@@ -8,7 +9,8 @@ resource "google_container_analysis_note" "builder_note" {
 }
 
 resource "google_binary_authorization_attestor" "builder_attestor" {
-  name = "${var.root_name}-attestor"
+  project = var.project_id
+  name    = format("%s-attestor", var.root_name)
   attestation_authority_note {
     note_reference = google_container_analysis_note.builder_note.name
     public_keys {
@@ -26,7 +28,8 @@ resource "google_binary_authorization_attestor_iam_binding" "builder_binding" {
   attestor = google_binary_authorization_attestor.builder_attestor.name
   role     = "roles/binaryauthorization.attestorsViewer"
   members = [
-    "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com",
+    format("serviceAccount:%s@cloudbuild.gserviceaccount.com",
+    data.google_project.project.number),
   ]
 }
 
@@ -57,14 +60,14 @@ resource "google_binary_authorization_policy" "policy" {
   }
 
   cluster_admission_rules {
-    cluster                 = "${var.region}-${var.zone}.${var.root_name}-test"
+    cluster                 = format("%s-%s.%s-test", var.region, var.zone, var.root_name)
     evaluation_mode         = "REQUIRE_ATTESTATION"
     enforcement_mode        = "ENFORCED_BLOCK_AND_AUDIT_LOG"
     require_attestations_by = [google_binary_authorization_attestor.builder_attestor.name]
   }
 
   cluster_admission_rules {
-    cluster                 = "${var.region}-${var.zone}.${var.root_name}-prod"
+    cluster                 = format("%s-%s.%s-prod", var.region, var.zone, var.root_name)
     evaluation_mode         = "REQUIRE_ATTESTATION"
     enforcement_mode        = "ENFORCED_BLOCK_AND_AUDIT_LOG"
     require_attestations_by = [google_binary_authorization_attestor.builder_attestor.name]

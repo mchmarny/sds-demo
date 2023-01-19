@@ -14,7 +14,7 @@ locals {
 
 # Set up deploy_sa. Used to verify built images.
 resource "google_service_account" "runner_sa" {
-  account_id   = "${var.root_name}-runner-sa"
+  account_id   = format("%s-runner-sa", var.root_name)
   display_name = "Cluster Runner Service Account"
 }
 
@@ -22,19 +22,19 @@ resource "google_project_iam_member" "runner_role_binding" {
   for_each = local.runner_roles
   project  = data.google_project.project.project_id
   role     = each.value
-  member   = "serviceAccount:${google_service_account.runner_sa.email}"
+  member   = format("serviceAccount:%s", google_service_account.runner_sa.email)
 }
 
 resource "google_service_account_iam_member" "test_cluster_role_binding" {
   service_account_id = google_service_account.runner_sa.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "serviceAccount:${data.google_project.project.project_id}.svc.id.goog[default/default]"
+  member             = format("serviceAccount:%s.svc.id.goog[default/default]", data.google_project.project.project_id)
 }
 
 # Test cluster
 resource "google_container_cluster" "test_cluster" {
-  name                     = "${var.root_name}-test"
-  location                 = "${var.region}-${var.zone}"
+  name                     = format("%s-test", var.root_name)
+  location                 = format("%s-%s", var.region, var.zone)
   remove_default_node_pool = true
   initial_node_count       = 1
 
@@ -47,11 +47,27 @@ resource "google_container_cluster" "test_cluster" {
   }
 
   workload_identity_config {
-    workload_pool = "${data.google_project.project.project_id}.svc.id.goog"
+    workload_pool = format("%s.svc.id.goog", data.google_project.project.project_id)
   }
 
   cluster_autoscaling {
     enabled = true
+
+    resource_limits {
+      resource_type = "cpu"
+      minimum       = 1
+      maximum       = 32
+    }
+
+    resource_limits {
+      resource_type = "memory"
+      minimum       = 4
+      maximum       = 64
+    }
+
+    auto_provisioning_defaults {
+      image_type = "COS_CONTAINERD"
+    }
   }
 
   addons_config {
@@ -76,9 +92,9 @@ resource "google_container_cluster" "test_cluster" {
 
 
 resource "google_container_node_pool" "test_cluster_nodes" {
-  name       = "${var.root_name}-test-pool"
+  name       = format("%s-test-pool", var.root_name)
   cluster    = google_container_cluster.test_cluster.id
-  node_count = 3
+  node_count = 1
 
   management {
     auto_repair  = true
@@ -122,8 +138,8 @@ resource "google_container_node_pool" "test_cluster_nodes" {
 
 # Test cluster
 resource "google_container_cluster" "prod_cluster" {
-  name                     = "${var.root_name}-prod"
-  location                 = "${var.region}-${var.zone}"
+  name                     = format("%s-prod", var.root_name)
+  location                 = format("%s-%s", var.region, var.zone)
   remove_default_node_pool = true
   initial_node_count       = 1
 
@@ -136,11 +152,27 @@ resource "google_container_cluster" "prod_cluster" {
   }
 
   workload_identity_config {
-    workload_pool = "${data.google_project.project.project_id}.svc.id.goog"
+    workload_pool = format("%s.svc.id.goog", data.google_project.project.project_id)
   }
 
   cluster_autoscaling {
     enabled = true
+
+    resource_limits {
+      resource_type = "cpu"
+      minimum       = 1
+      maximum       = 32
+    }
+
+    resource_limits {
+      resource_type = "memory"
+      minimum       = 4
+      maximum       = 64
+    }
+
+    auto_provisioning_defaults {
+      image_type = "COS_CONTAINERD"
+    }
   }
 
   addons_config {
@@ -165,9 +197,9 @@ resource "google_container_cluster" "prod_cluster" {
 
 
 resource "google_container_node_pool" "prod_cluster_nodes" {
-  name       = "${var.root_name}-prod-pool"
+  name       = format("%s-prod-pool", var.root_name)
   cluster    = google_container_cluster.prod_cluster.id
-  node_count = 3
+  node_count = 1
 
   management {
     auto_repair  = true

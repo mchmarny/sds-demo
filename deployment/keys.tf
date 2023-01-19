@@ -12,13 +12,13 @@ locals {
 }
 
 resource "google_kms_key_ring" "key_ring" {
-  name     = "${var.root_name}-ring"
+  name     = format("%s-ring", var.root_name)
   location = var.region
 }
 
 # Private key for VERIFIER_SA to sign attestations.
 resource "google_kms_crypto_key" "key" {
-  name     = "${var.root_name}-key"
+  name     = format("%s-key", var.root_name)
   key_ring = google_kms_key_ring.key_ring.id
   purpose  = "ASYMMETRIC_SIGN"
 
@@ -41,7 +41,7 @@ resource "google_kms_crypto_key_iam_binding" "builder_key_binding" {
   role          = each.value
 
   members = [
-    "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com",
+    format("serviceAccount:%s@cloudbuild.gserviceaccount.com", data.google_project.project.number),
   ]
 }
 
@@ -51,6 +51,6 @@ resource "google_kms_crypto_key_iam_binding" "runner_key_binding" {
   role          = each.value
 
   members = [
-    "serviceAccount:${google_service_account.runner_sa.email}",
+    format("serviceAccount:%s", google_service_account.runner_sa.email),
   ]
 }

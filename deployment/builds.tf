@@ -13,6 +13,8 @@ locals {
     "roles/containeranalysis.notes.editor",
     "roles/containeranalysis.notes.occurrences.viewer",
     "roles/containeranalysis.occurrences.editor",
+    "roles/iam.securityReviewer",
+    "roles/resourcemanager.projectIamAdmin",
   ])
 }
 
@@ -20,11 +22,12 @@ resource "google_project_iam_member" "builder_role_binding" {
   for_each = local.builder_roles
   project  = data.google_project.project.project_id
   role     = each.value
-  member   = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+  member = format("serviceAccount:%s@cloudbuild.gserviceaccount.com",
+  data.google_project.project.number)
 }
 
 resource "google_cloudbuild_worker_pool" "pool" {
-  name     = "${var.root_name}-pool"
+  name     = format("%s-pool", var.root_name)
   location = var.region
   worker_config {
     disk_size_gb   = 100
@@ -34,7 +37,7 @@ resource "google_cloudbuild_worker_pool" "pool" {
 }
 
 resource "google_cloudbuild_trigger" "build_trigger" {
-  name     = "${var.root_name}-build-trigger"
+  name     = format("%s-build-trigger", var.root_name)
   location = var.region
 
   github {

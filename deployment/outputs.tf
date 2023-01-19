@@ -16,6 +16,6 @@ output "PROJECT_REGION" {
 }
 
 output "GITHUB_REPO" {
-  value       = "${var.github_repo_owner}/${var.github_repo_name}"
+  value       = format("%s/%s", var.github_repo_owner, var.github_repo_name)
   description = "Fully qualified GitHub repo that will trigger Cloud Build"
 }
