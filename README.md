@@ -140,6 +140,11 @@ git push origin $VERSION_TAG
     * release - deploys the image via Cloud Deploy
   * On Build Summary, show Build Artifacts > Image security insights ([SLSA Build Level 3](https://slsa.dev/spec/v0.1/levels))
     * Show `Dependencies` and `Build Provenance` YAMLs
+  * Show in-toto attestation in CLI:
+
+```shell
+gcloud artifacts docker images describe $image_digest --show-provenance --format json | jq -r '.provenance_summary.provenance[0].envelope.payload' | base64 --decode | jq .
+```
 
 ![](images/build.png)
 
