@@ -215,6 +215,8 @@ slsa-verifier verify-image $digest \
   --builder-id https://cloudbuild.googleapis.com/GoogleHostedWorker@v0.3
 ```
 
+> `source-tag` tag is not supported in GCB verification
+
 > The `source-uri` and `builder-id` come from `materials.uri` and `builder.id` respectively in the in-toto statement (`provenance_summary.provenance.build.intotoStatement`).
 
 
