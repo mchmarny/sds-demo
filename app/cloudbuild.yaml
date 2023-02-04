@@ -4,7 +4,7 @@
 substitutions:
   _APP_NAME: hello
   _PIPELINE_NAME: deploy-demo-pipeline
-  _GO_VERSION: "1.19"
+  _GO_VERSION: "1.20"
 
 steps:
   # Go test
