@@ -1,16 +1,14 @@
-# Overview: Cloud Build build pipeline with Cloud Deploy release 
-# Note: COMMIT_SHA variable requires git tag commit
+# Overview: Cloud Build build pipeline with Cloud Deploy release using git tag.
 
 substitutions:
   _APP_NAME: hello
   _PIPELINE_NAME: deploy-demo-pipeline
-  _GO_VERSION: "1.20"
 
 steps:
 
   # Go test
   - id: test
-    name: golang:${_GO_VERSION}
+    name: golang@sha256:d87854caf63a176f404416f5a6522a8f35ee00a4743f0148bfc9a3ee1c4c476e
     env:
     - GO111MODULE=on
     entrypoint: /bin/bash
@@ -22,7 +20,7 @@ steps:
 
   # Build image
   - id: build
-    name: gcr.io/cloud-builders/docker
+    name: gcr.io/cloud-builders/docker@sha256:1d3fcb164b422c72e13786fd4a03b6da3605d4d65ed245b66941102595795fac
     entrypoint: /bin/bash
     waitFor:
     - test
@@ -37,7 +35,7 @@ steps:
   
   # Publish image, get sha256
   - id: publish
-    name: gcr.io/cloud-builders/docker
+    name: gcr.io/cloud-builders/docker@sha256:1d3fcb164b422c72e13786fd4a03b6da3605d4d65ed245b66941102595795fac
     entrypoint: /bin/bash
     waitFor: 
     - build
@@ -75,7 +73,7 @@ steps:
   # See the grafeas/kritis for instruction on how to build your own signer.
   # https://github.com/grafeas/kritis/blob/master/docs/signer.md
   - id: scan
-    name: us-west1-docker.pkg.dev/cloudy-demos/tools/kritis-signer
+    name: us-west1-docker.pkg.dev/cloudy-demos/tools/kritis-signer@sha256:51cec6d7d9390ea8ab9eb3b62f42c5cc69eaa048fcf46b8655fcf205e38a7fe2
     entrypoint: /bin/bash
     waitFor:
     - publish
@@ -92,12 +90,13 @@ steps:
       -kms_key_name=${_KMS_KEY_NAME} \
       -kms_digest_alg=${_KMS_DIGEST_ALG}
 
-  # Attest image that it was built in GCB
+  # Attest image that it was built in GCB, has SBOM, and passed vulnerability scan.
   - id: attest
-    name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk@sha256:57b67149c067c2da42bd0464fdf20feb8883c4f3c53a30e6619e87004b101aad
     entrypoint: /bin/bash
     waitFor:
-    - publish
+    - sbom
+    - scan
     args:
     - -c
     - |-
@@ -108,11 +107,9 @@ steps:
 
   # Create release in Google Cloud Deploy
   - id: release
-    name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk@sha256:57b67149c067c2da42bd0464fdf20feb8883c4f3c53a30e6619e87004b101aad
     entrypoint: /bin/bash
     waitFor:
-    - sbom
-    - scan
     - attest
     dir: app
     args:
