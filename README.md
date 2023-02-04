@@ -195,6 +195,7 @@ git push origin $VERSION_TAG
     * release - deploys the image via Cloud Deploy
   * On Build Summary, show Build Artifacts > Image security insights ([SLSA Build Level 3](https://slsa.dev/spec/v0.1/levels))
     * Show `Dependencies` and `Build Provenance` YAMLs
+    ![](images/build.png)
   * Show in-toto attestation in CLI:
 
 **Retrieve provenance as JSON**:
@@ -216,7 +217,7 @@ slsa-verifier verify-image $digest \
 
 > The `source-uri` and `builder-id` come from `materials.uri` and `builder.id` respectively in the in-toto statement (`provenance_summary.provenance.build.intotoStatement`).
 
-![](images/build.png)
+
 
 * Navigate to Artifact Registry [list of registries](https://console.cloud.google.com/artifacts)
   * Drill into `cloudbuild-demo/hello`
