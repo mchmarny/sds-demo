@@ -224,8 +224,9 @@ slsa-verifier verify-image $digest \
   * Show attestation and signature artifacts (`*.att` and `*.sig`)
   * Navigate to Manifest in `*.sig`, show cosign/signature
   * Navigate to the image (the one with the `v*` tag) and show Vulnerabilities
-
-![](images/vulns.png)
+    ![](images/vulns.png)
+  * Show [policy](policy/vulnz-signing-policy.yaml)
+  * Show Kritis Signer step in [cloudbuild.yaml](app/cloudbuild.yaml)
 
 > Make sure the Cloud Build job completed before proceeding.
 
