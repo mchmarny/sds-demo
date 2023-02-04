@@ -197,9 +197,24 @@ git push origin $VERSION_TAG
     * Show `Dependencies` and `Build Provenance` YAMLs
   * Show in-toto attestation in CLI:
 
+**Retrieve provenance as JSON**:
+
 ```shell
-gcloud artifacts docker images describe $image_digest --show-provenance --format json | jq -r '.provenance_summary.provenance[0].envelope.payload' | base64 --decode | jq .
+gcloud artifacts docker images describe $digest --show-provenance --format json > test.json
 ```
+
+**Verify provenance**:
+
+> Using [slsa-verifier](https://github.com/slsa-framework/slsa-verifier#compilation-from-source)
+
+```shell
+slsa-verifier verify-image $digest \
+  --provenance-path test.json \
+  --source-uri https://github.com/mchmarny/cloudbuild-demo \
+  --builder-id https://cloudbuild.googleapis.com/GoogleHostedWorker@v0.3
+```
+
+> The `source-uri` and `builder-id` come from `materials.uri` and `builder.id` respectively in the in-toto statement (`provenance_summary.provenance.build.intotoStatement`).
 
 ![](images/build.png)
 
