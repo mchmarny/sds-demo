@@ -196,6 +196,15 @@ git push origin $VERSION_TAG
   * On Build Summary, show Build Artifacts > Image security insights ([SLSA Build Level 3](https://slsa.dev/spec/v0.1/levels))
     * Show `Dependencies` and `Build Provenance` YAMLs
     ![](images/build.png)
+
+* Navigate to Artifact Registry [list of registries](https://console.cloud.google.com/artifacts)
+  * Drill into `cloudbuild-demo/hello`
+  * Show attestation and signature artifacts (`*.att` and `*.sig`)
+  * Navigate to Manifest in `*.sig`, show cosign/signature
+  * Navigate to the image (the one with the `v*` tag) and show Vulnerabilities
+    ![](images/vulns.png)
+  * Show [policy](policy/vulnz-signing-policy.yaml)
+  * Show Kritis Signer step in [cloudbuild.yaml](app/cloudbuild.yaml)
   * Show in-toto attestation in CLI:
 
 **Retrieve provenance as JSON**:
@@ -215,20 +224,14 @@ slsa-verifier verify-image $digest \
   --builder-id https://cloudbuild.googleapis.com/GoogleHostedWorker@v0.3
 ```
 
-> `source-tag` tag is not supported in GCB verification
+> Note, `source-tag` tag is not supported in GCB verification. The `source-uri` and `builder-id` come from `materials.uri` and `builder.id` respectively in the in-toto statement (`provenance_summary.provenance.build.intotoStatement`).
+  * Extract the SBOM attestation (update the key location as needed)
 
-> The `source-uri` and `builder-id` come from `materials.uri` and `builder.id` respectively in the in-toto statement (`provenance_summary.provenance.build.intotoStatement`).
-
-
-
-* Navigate to Artifact Registry [list of registries](https://console.cloud.google.com/artifacts)
-  * Drill into `cloudbuild-demo/hello`
-  * Show attestation and signature artifacts (`*.att` and `*.sig`)
-  * Navigate to Manifest in `*.sig`, show cosign/signature
-  * Navigate to the image (the one with the `v*` tag) and show Vulnerabilities
-    ![](images/vulns.png)
-  * Show [policy](policy/vulnz-signing-policy.yaml)
-  * Show Kritis Signer step in [cloudbuild.yaml](app/cloudbuild.yaml)
+```shell
+cosign verify-attestation --type spdxjson \
+  --key gcpkms://projects/cloudy-demos/locations/us-west1/keyRings/binauthz/cryptoKeys/binauthz-signer/cryptoKeyVersions/1 \
+  $digest | jq -r '.payload' | base64 -d | jq .
+```
 
 > Make sure the Cloud Build job completed before proceeding.
 
