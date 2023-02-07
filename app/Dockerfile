@@ -17,7 +17,8 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath \
     -a -mod vendor -o app
 
 # RUN
-FROM cgr.dev/chainguard/static:latest
+# FROM cgr.dev/chainguard/static:latest
+FROM gcr.io/distroless/static-debian11:nonroot
 COPY --from=builder /src/app /app/
 
 WORKDIR /app
