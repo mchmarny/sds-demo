@@ -33,7 +33,7 @@ steps:
         -t "${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${_APP_NAME}:${TAG_NAME}" \
         .
   
-  # Publish image, get sha256
+  # Publish image, get digest, and save it to file.
   - id: publish
     name: gcr.io/cloud-builders/docker@sha256:1d3fcb164b422c72e13786fd4a03b6da3605d4d65ed245b66941102595795fac
     entrypoint: /bin/bash
