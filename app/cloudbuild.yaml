@@ -85,14 +85,12 @@ steps:
     - -c
     - |-
       /kritis/signer \
-      -v=10 \
-      -mode=check-and-sign \
-      -alsologtostderr \
-      -image=$(/bin/cat app/image-digest.txt) \
-      -policy=policy/vulnz-signing-policy.yaml \
-      -note_name=${_NOTE_NAME} \
-      -kms_key_name=${_KMS_KEY_NAME} \
-      -kms_digest_alg=${_KMS_DIGEST_ALG}
+        -mode=check-and-sign -v=10 -alsologtostderr \
+        -image=$(/bin/cat app/image-digest.txt) \
+        -policy=policy/vulnz-signing-policy.yaml \
+        -note_name=${_NOTE_NAME} \
+        -kms_key_name=${_KMS_KEY_NAME} \
+        -kms_digest_alg=${_KMS_DIGEST_ALG}
 
   # Attest image with BinAuthz (attestation to X)
   # Future: Could be unnecessary, given SBOM/Provenance/Vulnerability-based policy checks
