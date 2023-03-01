@@ -8,7 +8,7 @@ steps:
 
   # Go test
   - id: test
-    name: golang@sha256:d87854caf63a176f404416f5a6522a8f35ee00a4743f0148bfc9a3ee1c4c476e
+    name: golang@sha256:745aa72cefb6f9527c1588590982c0bdf85a1be5d611dda849e54b5dbf551506
     env:
     - GO111MODULE=on
     entrypoint: /bin/bash
@@ -20,7 +20,7 @@ steps:
 
   # Build image
   - id: build
-    name: gcr.io/cloud-builders/docker@sha256:1d3fcb164b422c72e13786fd4a03b6da3605d4d65ed245b66941102595795fac
+    name: gcr.io/cloud-builders/docker@sha256:f81b3646439673359ef921838fbb4abda04ef69a6a0df9811be2d4cc57f30da5
     entrypoint: /bin/bash
     waitFor:
     - test
@@ -36,7 +36,7 @@ steps:
   # Publish image, get digest, and save it to file.
   # Digest because tags aren't (really) cryptographically verifiable.
   - id: publish
-    name: gcr.io/cloud-builders/docker@sha256:1d3fcb164b422c72e13786fd4a03b6da3605d4d65ed245b66941102595795fac
+    name: gcr.io/cloud-builders/docker@sha256:f81b3646439673359ef921838fbb4abda04ef69a6a0df9811be2d4cc57f30da5
     entrypoint: /bin/bash
     waitFor: 
     - build
