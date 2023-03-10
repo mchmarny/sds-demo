@@ -49,6 +49,26 @@ steps:
         --format '{{index .RepoDigests 0}}' > image-digest.txt
       cat image-digest.txt
 
+  - id: report
+    name: anchore/grype
+    waitFor:
+    - publish
+    args:
+    - -c
+    - |-
+      --add-cpes-if-none -s AllLayers -o json --file report.json $(cat image-digest.txt)
+
+  # The Dockerfile used to generate this image is located in the vulctl repo.
+  # https://github.com/mchmarny/vulctl/blob/main/Dockerfile
+  - id: import
+    name: us-west1-docker.pkg.dev/cloudy-build/vulctl/vulctl@sha256:9caf1268d6bb47b2aa76dcb07a9c27da6c80751855c27e0efb2ac7a2f1ac005d
+    waitFor:
+    - report
+    args:
+    - -c
+    - |-
+      import --project $$PROJECT_ID --source $(cat image-digest.txt) --file report.json --format grype
+
   # Generate Software Bill of Materials (SBOM).
   # Generate SBOM file for all image layers in JSON format (SPDX schema), 
   # and creates attestation for that container image with the SBOM as predicate
