@@ -1,0 +1,52 @@
+gkePolicy:
+  imageAllowlist:
+    allowPattern:
+      - "us.gcr.io/google-containers/**"
+      - "gcr.io/google_containers/**"
+      - "gcr.io/stackdriver-agents/**"
+      - "gke.gcr.io/**"
+      - "us-west1-docker.pkg.dev/cloudy-labz/**"
+      - "us-docker.pkg.dev/cloudy-demos/**"
+
+  checkSets:
+
+    - displayName: "Test check set"
+      scope:
+        kubernetesNamespace: "default"
+      imageAllowlist:
+        allowPattern:
+          - "us-west1-docker.pkg.dev/cloudy-demos/*"
+      checks:
+        - vulnerabilityCheck:
+           maximumFixableSeverity: LOW
+           maximumUnfixableSeverity: MEDIUM
+           allowedCves:
+             - "CVE-2020-29511"
+             - "CVE-2020-29509"
+           containerAnalysisVulnerabilityProjects: "projects/goog-vulnz"
+        - alwaysDeny: true
+
+    - displayName: "Prod check set"
+      scope:
+        kubernetesNamespace: "default"
+      imageAllowlist:
+        allowPattern:
+          - "us-west1-docker.pkg.dev/cloudy-demos/*"
+      checks:
+        - vulnerabilityCheck:
+           maximumFixableSeverity: LOW
+           maximumUnfixableSeverity: MEDIUM
+           allowedCves:
+             - "CVE-2020-29511"
+             - "CVE-2020-29509"
+           containerAnalysisVulnerabilityProjects: "projects/goog-vulnz"
+        - alwaysDeny: true
+
+    - displayName: "Default check set"
+      checks:  
+        - displayName: "Image freshness check"
+          imageFreshnessCheck:
+            maxUploadAgeDays: 30
+        - alwaysDeny: true
+
+
