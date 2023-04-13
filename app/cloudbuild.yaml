@@ -121,7 +121,7 @@ steps:
       gcloud deploy releases create rel-${SHORT_SHA} \
       --delivery-pipeline ${_PIPELINE_NAME} \
       --region ${LOCATION} \
-      --annotations commitId=${REVISION_ID} \
+      --annotations "commitId=${REVISION_ID},tag=${TAG_NAME}" \
       --images "${_APP_NAME}=$(cat image-digest.txt)"
 
 images:
