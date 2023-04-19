@@ -13,7 +13,7 @@ push: ## Pushes all outstanding changes to the remote repository
 .PHONY: push
 
 tag: ## Creates release tag
-	git tag -s -m "demo version bump to $(VERSION)" $(VERSION)
+	git tag -s -m "demo version bump" $(VERSION)
 	git push origin $(VERSION)
 .PHONY: tag
 
