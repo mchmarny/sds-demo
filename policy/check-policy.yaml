@@ -1,0 +1,75 @@
+# Create policy check base policy using this file
+
+# Setup 
+#
+# export PROJECT_NUMBER=$(gcloud projects list \
+#   --filter "projectId:$PROJECT_ID" \
+#   --format "value(PROJECT_NUMBER)")
+# export SERVICE_ACCOUNT="service-$PROJECT_NUMBER@gcp-sa-binaryauthorization.iam.gserviceaccount.com"
+# export COMPUTE_SERVICE_ACCOUNT="$PROJECT_NUMBER-compute@developer.gserviceaccount.com"
+# gcloud projects add-iam-policy-binding $PROJECT_ID \
+#   --member "serviceAccount:$SERVICE_ACCOUNT" \
+#   --role roles/binaryauthorization.policyEvaluator \
+#   --condition None
+# gcloud projects add-iam-policy-binding $PROJECT_ID \
+#   --member "serviceAccount:$SERVICE_ACCOUNT" \
+#   --role roles/storage.objectViewer \
+#   --condition None
+# gcloud projects add-iam-policy-binding $PROJECT_ID \
+#   --member "serviceAccount:$SERVICE_ACCOUNT" \
+#   --role roles/artifactregistry.reader \
+#   --condition None
+
+# Create policy 
+#
+# gcloud beta container binauthz policy create check-based-policy-demo \
+# --platform gke \
+# --policy-file policy/check-policy.yaml
+
+# Apply policy to cluster while both, enforcing the original policy
+# and monitoring the new check-based policy
+# 
+# gcloud beta container clusters update $CLUSTER_NAME \
+#   --impersonate-service-account $COMPUTE_SERVICE_ACCOUNT \
+#   --zone $LOCATION \
+#   --binauthz-evaluation-mode MONITORING_AND_PROJECT_SINGLETON_POLICY_ENFORCE \
+#   --binauthz-policy "projects/cloudy-demos/platforms/gke/policies/check-based-policy-demo"
+
+# To view results of the check-based policy in Cloud Logging
+# 
+# gcloud logging read --order "desc" --freshness 7d --limit 10 \
+#   'logName:"binaryauthorization.googleapis.com%2Fcontinuous_validation"'
+
+
+gkePolicy:
+  imageAllowlist:
+    allowPattern:
+      - "us.gcr.io/google-containers/**"
+      - "gcr.io/google_containers/**"
+      - "gcr.io/stackdriver-agents/**"
+      - "gke.gcr.io/**"
+
+  checkSets:
+    - displayName: "Demo check set"
+      scope:
+        kubernetesNamespace: "default"
+      imageAllowlist:
+        allowPattern:
+          - "us-west1-docker.pkg.dev/cloudy-demos/*"
+          - "us-docker.pkg.dev/cloudy-demos/*"
+      checks:
+        - vulnerabilityCheck:
+           maximumFixableSeverity: LOW
+           maximumUnfixableSeverity: MEDIUM
+           allowedCves:
+             - "CVE-2020-29511"
+             - "CVE-2020-29509"
+           containerAnalysisVulnerabilityProjects: "projects/goog-vulnz"
+        - displayName: "Image freshness check"
+          imageFreshnessCheck:
+            maxUploadAgeDays: 30
+        - alwaysDeny: true
+
+    - displayName: "Default check set"
+      checks:
+        - alwaysDeny: true
