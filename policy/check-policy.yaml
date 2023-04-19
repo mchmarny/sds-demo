@@ -1,3 +1,7 @@
+# gcloud beta container binauthz policy create check-based-policy-demo \
+# --platform gke \
+# --policy-file policy/check-policy.yaml
+
 gkePolicy:
   imageAllowlist:
     allowPattern:
@@ -5,17 +9,15 @@ gkePolicy:
       - "gcr.io/google_containers/**"
       - "gcr.io/stackdriver-agents/**"
       - "gke.gcr.io/**"
-      - "us-west1-docker.pkg.dev/cloudy-labz/**"
-      - "us-docker.pkg.dev/cloudy-demos/**"
 
   checkSets:
-
-    - displayName: "Test check set"
+    - displayName: "Demo check set"
       scope:
         kubernetesNamespace: "default"
       imageAllowlist:
         allowPattern:
           - "us-west1-docker.pkg.dev/cloudy-demos/*"
+          - "us-docker.pkg.dev/cloudy-demos/*"
       checks:
         - vulnerabilityCheck:
            maximumFixableSeverity: LOW
@@ -24,29 +26,11 @@ gkePolicy:
              - "CVE-2020-29511"
              - "CVE-2020-29509"
            containerAnalysisVulnerabilityProjects: "projects/goog-vulnz"
-        - alwaysDeny: true
-
-    - displayName: "Prod check set"
-      scope:
-        kubernetesNamespace: "default"
-      imageAllowlist:
-        allowPattern:
-          - "us-west1-docker.pkg.dev/cloudy-demos/*"
-      checks:
-        - vulnerabilityCheck:
-           maximumFixableSeverity: LOW
-           maximumUnfixableSeverity: MEDIUM
-           allowedCves:
-             - "CVE-2020-29511"
-             - "CVE-2020-29509"
-           containerAnalysisVulnerabilityProjects: "projects/goog-vulnz"
-        - alwaysDeny: true
-
-    - displayName: "Default check set"
-      checks:  
         - displayName: "Image freshness check"
           imageFreshnessCheck:
             maxUploadAgeDays: 30
         - alwaysDeny: true
 
-
+    - displayName: "Default check set"
+      checks:
+        - alwaysDeny: true
