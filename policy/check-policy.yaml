@@ -37,7 +37,7 @@
 
 # To view results of the check-based policy in Cloud Logging
 # 
-# gcloud logging read --order="desc" --freshness=7d \
+# gcloud logging read --order "desc" --freshness 7d --limit 10 \
 #   'logName:"binaryauthorization.googleapis.com%2Fcontinuous_validation"'
 
 
