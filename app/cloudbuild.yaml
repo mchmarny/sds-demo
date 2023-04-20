@@ -20,7 +20,7 @@ steps:
 
   # Build image
   - id: build
-    name: gcr.io/cloud-builders/docker@sha256:f81b3646439673359ef921838fbb4abda04ef69a6a0df9811be2d4cc57f30da5
+    name: gcr.io/cloud-builders/docker@sha256:e4516d42f7930fee639333151672caa7fdc35c7f9b5e7bb4b90d12d77e775a34
     entrypoint: /bin/bash
     waitFor:
     - test
@@ -36,7 +36,7 @@ steps:
   # Publish image, get digest, and save it to file.
   # Digest because tags aren't (really) cryptographically verifiable.
   - id: publish
-    name: gcr.io/cloud-builders/docker@sha256:f81b3646439673359ef921838fbb4abda04ef69a6a0df9811be2d4cc57f30da5
+    name: gcr.io/cloud-builders/docker@sha256:e4516d42f7930fee639333151672caa7fdc35c7f9b5e7bb4b90d12d77e775a34
     entrypoint: /bin/bash
     waitFor: 
     - build
@@ -95,7 +95,7 @@ steps:
   # Attest image with BinAuthz (attestation to X)
   # Future: Could be unnecessary, given SBOM/Provenance/Vulnerability-based policy checks
   - id: attest
-    name: gcr.io/google.com/cloudsdktool/cloud-sdk@sha256:57b67149c067c2da42bd0464fdf20feb8883c4f3c53a30e6619e87004b101aad
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk@sha256:5e69d0a7e3c1206c0a2f48f6299487d7f7c34c8b228e809b1000b032cb33d987
     entrypoint: /bin/bash
     waitFor:
     - sbom
@@ -110,7 +110,7 @@ steps:
 
   # Create release in Google Cloud Deploy
   - id: release
-    name: gcr.io/google.com/cloudsdktool/cloud-sdk@sha256:57b67149c067c2da42bd0464fdf20feb8883c4f3c53a30e6619e87004b101aad
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk@sha256:5e69d0a7e3c1206c0a2f48f6299487d7f7c34c8b228e809b1000b032cb33d987
     entrypoint: /bin/bash
     waitFor:
     - attest
