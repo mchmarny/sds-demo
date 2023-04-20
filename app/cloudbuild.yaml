@@ -78,7 +78,7 @@ steps:
     - -o=spdx-json
     - -s=AllLayers
     - --file=./report.json
-    - $(cat image-digest.txt)
+    - "$(cat image-digest.txt)"
 
 
   # Test against my vulnerability policy.
