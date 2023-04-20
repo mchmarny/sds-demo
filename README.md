@@ -1,6 +1,6 @@
 # GCP Secure CI/CD Pipeline Demo
 
-This repo bootstraps a full CI/CD pipeline on Google Cloud to demonstrate policy controls for container image provenance, and for GKE authorization based on attestation. What's included:
+This repo bootstraps a CI/CD pipeline on Google Cloud to demonstrate policy controls for container image provenance, and for GKE authorization based on attestation. What's included:
 
 * Cloud Build pipeline with on tag GitHub repo trigger and SBOM generation
 * Test and Prod GKE clusters configured for Binary Authorization
