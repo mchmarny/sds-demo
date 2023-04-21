@@ -71,16 +71,19 @@ steps:
       builder $(cat image-digest.txt)
 
   # Generate Software Bill of Materials (SBOM) for all image layers in SPDX/JSON format.
-  - id: sbom2
-    name: us-docker.pkg.dev/cloudy-demos/hub/anchore/syft@sha256:58cdb09e9a6d196d8e330e46d164d76aa397bba65e00782a2f8e8b923656f21d
-    waitFor:
-    - publish
-    dir: app
-    args:
-    - -o=spdx-json
-    - -s=AllLayers
-    - --file=./report.json
-    - ${cat image-digest.txt}
+  # - id: sbom2
+  #   name: us-docker.pkg.dev/cloudy-demos/hub/anchore/syft@sha256:58cdb09e9a6d196d8e330e46d164d76aa397bba65e00782a2f8e8b923656f21d
+  #   waitFor:
+  #   - publish
+  #   dir: app
+  #   env:
+  #   - _DIGEST=$(cat image-digest.txt)
+  #   args:
+  #   - -o=spdx-json
+  #   - -s=AllLayers
+  #   - --file=./report.json
+  #   - $(cat image-digest.txt)
+  #   - ${_DIGEST}
 
   # Test against my vulnerability policy.
   # For stability of the demo uses a pre-built image.
