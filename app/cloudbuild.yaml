@@ -76,13 +76,11 @@ steps:
     waitFor:
     - publish
     dir: app
-    env:
-    - _DIGEST=$(cat image-digest.txt)
     args:
     - -o=spdx-json
     - -s=AllLayers
     - --file=./report.json
-    - ${_DIGEST}
+    - ${cat image-digest.txt}
 
   # Test against my vulnerability policy.
   # For stability of the demo uses a pre-built image.
