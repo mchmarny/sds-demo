@@ -1,3 +1,6 @@
+# Passing data between steps.
+# Many images do not provide bash or sh as an entrypoint.
+# How do you pass previous step state as such container image?
 steps:
 
   # Write a file to persist data between steps
@@ -7,7 +10,8 @@ steps:
       #!/usr/bin/env bash
       echo "test" > ./test.txt
 
-  # Read the file from Step 1 as an input into container image that does not have shell
+  # Read the file using cat 
+  # ERROR: no shell == no cat, value is empty
   - id: read1
     name: anchore/syft
     waitFor:
@@ -18,6 +22,8 @@ steps:
     - --file=./report.json
     - $(cat ./test.txt)
 
+  # Read the file using env var
+  # ERROR: no shell == no cat, even when defining env var
   - id: read2
     name: anchore/syft
     waitFor:
@@ -25,7 +31,4 @@ steps:
     env:
     - _DIGEST=$(cat ./test.txt)
     args:
-    - -o=spdx-json
-    - -s=AllLayers
-    - --file=./report.json
     - ${_DIGEST}
