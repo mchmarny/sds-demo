@@ -7,7 +7,7 @@ set -o errexit
 set -o pipefail
 
 REPO_OWNER=$1
-REPO_NAME=${2:-cloudbuild-demo}
+REPO_NAME=${2:-sds-demo}
 
 if [[ -z "$REPO_OWNER" ]]; then
   echo "Usage $0 <your-github-username>"

@@ -22,15 +22,15 @@ This repo bootstraps a CI/CD pipeline on Google Cloud to demonstrate policy cont
 
 ### Setup Environment  
 
-Start by forking [this repo](https://github.com/mchmarny/cloudbuild-demo) into your GitHub Account. Navigate to https://github.com/mchmarny/cloudbuild-demo and click fork.
+Start by forking [this repo](https://github.com/mchmarny/sds-demo) into your GitHub Account. Navigate to https://github.com/mchmarny/sds-demo and click fork.
 
 ![](images/fork.png)
 
 Next, clone that repo locally: 
 
 ```shell
-git clone git@github.com:<your-github-username>/cloudbuild-demo.git
-cd cloudbuild-demo
+git clone git@github.com:<your-github-username>/sds-demo.git
+cd sds-demo
 ```
 
 ### Provision Resources 
@@ -92,7 +92,7 @@ Go through the `Connect Repository` flow. The important bits:
 * **Select source**: GitHub (Cloud Build GitHub App)
 * Select repository
   * **GitHub Account**: this is your GitHub Username (should be populated after successful auth)
-  * **Repository**: the newly cloned repo (`your-github-username/cloudbuild-demo`)
+  * **Repository**: the newly cloned repo (`your-github-username/sds-demo`)
 * **Create a trigger**: click DONE (we will script that part next)
 
 
@@ -198,7 +198,7 @@ git push origin $VERSION_TAG
     ![](images/build.png)
 
 * Navigate to Artifact Registry [list of registries](https://console.cloud.google.com/artifacts)
-  * Drill into `cloudbuild-demo/hello`
+  * Drill into `sds-demo/hello`
   * Show attestation and signature artifacts (`*.att` and `*.sig`)
   * Navigate to Manifest in `*.sig`, show cosign/signature
   * Navigate to the image (the one with the `v*` tag) and show Vulnerabilities
@@ -220,7 +220,7 @@ gcloud artifacts docker images describe $digest --show-provenance --format json 
 ```shell
 slsa-verifier verify-image $digest \
   --provenance-path test.json \
-  --source-uri https://github.com/mchmarny/cloudbuild-demo \
+  --source-uri https://github.com/mchmarny/sds-demo \
   --builder-id https://cloudbuild.googleapis.com/GoogleHostedWorker@v0.3
 ```
 
