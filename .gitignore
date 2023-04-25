@@ -26,5 +26,6 @@ cosign.*
 # Templates files 
 app/clouddeploy.yaml
 policy/attestor-policy.yaml
-test.json
-report.json
+
+# Test files
+*.json
