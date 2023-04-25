@@ -27,3 +27,4 @@ cosign.*
 app/clouddeploy.yaml
 policy/attestor-policy.yaml
 test.json
+report.json
