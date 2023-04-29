@@ -1,5 +1,3 @@
-# TODO: add support for canary deployments
-# https://cloud.google.com/deploy/docs/deploy-app-canary
 apiVersion: deploy.cloud.google.com/v1
 kind: DeliveryPipeline
 metadata:
@@ -17,7 +15,7 @@ metadata:
   name: demo-test
 description: test cluster
 gke:
-  cluster: projects/cloudy-test/locations/us-west1-c/clusters/demo-test
+  cluster: projects/s3cme1/locations/us-west1-c/clusters/demo-test
 ---
 
 apiVersion: deploy.cloud.google.com/v1
@@ -27,4 +25,4 @@ metadata:
 description: prod cluster
 requireApproval: true
 gke:
-  cluster: projects/cloudy-prod/locations/us-west1-c/clusters/demo-prod
+  cluster: projects/s3cme1/locations/us-west1-c/clusters/demo-prod
