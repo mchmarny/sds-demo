@@ -8,7 +8,7 @@ steps:
 
   # Go test
   - id: test
-    name: us-docker.pkg.dev/cloudy-demos/hub/golang@sha256:403f48633fb5ebd49f9a2b6ad6719f912df23dae44974a0c9445be331e72ff5e
+    name: golang@sha256:403f48633fb5ebd49f9a2b6ad6719f912df23dae44974a0c9445be331e72ff5e
     env:
     - GO111MODULE=on
     entrypoint: /bin/bash
@@ -54,7 +54,7 @@ steps:
   # and creates attestation for that container image with the SBOM as predicate
   # Future: Automatically SBOM generation in CA. 
   - id: sbom
-    name: us-docker.pkg.dev/cloudy-tools/builders/sbominator@sha256:508ebd72e7b83fa3db15419820afa2c8eeff9be2111dd42bb7980c2fdddfd0f4
+    name: us-docker.pkg.dev/s3cme1/builders/sbominator@sha256:d5336ddf0897758f641be4e5fa5c8de299289d4adca6388e9f820833c83706cb
     entrypoint: /bin/bash
     waitFor:
     - publish
@@ -77,7 +77,7 @@ steps:
   # Check-based policies
   # Future: Call to check-based policy API in BinAuthz (consistent controls)
   - id: scan
-    name: us-west1-docker.pkg.dev/cloudy-demos/tools/kritis-signer@sha256:51cec6d7d9390ea8ab9eb3b62f42c5cc69eaa048fcf46b8655fcf205e38a7fe2
+    name: us-docker.pkg.dev/s3cme1/builders/kritis-signer@sha256:b6d76a209a79a7409e552f81e3a362fc92688f91ab1b67cedf014ee5a03cd97a
     entrypoint: /bin/bash
     waitFor:
     - publish
