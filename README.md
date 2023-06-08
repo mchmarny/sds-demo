@@ -210,7 +210,7 @@ git push origin $VERSION_TAG
 **Retrieve provenance as JSON**:
 
 ```shell
-gcloud artifacts docker images describe $digest --show-provenance --format json > test.json
+gcloud artifacts docker images describe $digest --show-provenance --format json > provenance.json
 ```
 
 **Verify provenance**:
@@ -219,8 +219,8 @@ gcloud artifacts docker images describe $digest --show-provenance --format json 
 
 ```shell
 slsa-verifier verify-image $digest \
-  --provenance-path test.json \
-  --source-uri https://github.com/mchmarny/sds-demo \
+  --provenance-path provenance.json \
+  --source-uri git+https://github.com/mchmarny/sds-demo \
   --builder-id https://cloudbuild.googleapis.com/GoogleHostedWorker@v0.3
 ```
 
