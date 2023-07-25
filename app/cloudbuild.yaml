@@ -8,7 +8,7 @@ steps:
 
   # Go test
   - id: test
-    name: us-west1-docker.pkg.dev/s3cme1/docker/golang@sha256:4b1fc02d16fca272e5e6e6adc98396219b43ef663a377eef4a97e881d364393f
+    name: us-west1-docker.pkg.dev/s3cme1/docker/golang@sha256:cfc9d1b07b1ef4f7a4571f0b60a99646a92ef76adb7d9943f4cb7b606c6554e2
     env:
     - GO111MODULE=on
     entrypoint: /bin/bash
@@ -20,7 +20,7 @@ steps:
 
   # Build image
   - id: build
-    name: gcr.io/cloud-builders/docker@sha256:aed82362639b80584d28eb45008b7b3a28643ad200f8f80df8171a9bebbe3dc5
+    name: gcr.io/cloud-builders/docker@sha256:1fe0557459fea8552d5ce57bb77aaf238139bd69131d670e152e68358f6cb13c
     entrypoint: /bin/bash
     waitFor:
     - test
@@ -36,7 +36,7 @@ steps:
   # Publish image, get digest, and save it to file.
   # Digest because tags aren't (really) cryptographically verifiable.
   - id: publish
-    name: gcr.io/cloud-builders/docker@sha256:aed82362639b80584d28eb45008b7b3a28643ad200f8f80df8171a9bebbe3dc5
+    name: gcr.io/cloud-builders/docker@sha256:1fe0557459fea8552d5ce57bb77aaf238139bd69131d670e152e68358f6cb13c
     entrypoint: /bin/bash
     waitFor: 
     - build
@@ -95,7 +95,7 @@ steps:
   # Attest image with BinAuthz (attestation to X)
   # Future: Could be unnecessary, given SBOM/Provenance/Vulnerability-based policy checks
   - id: attest
-    name: gcr.io/google.com/cloudsdktool/cloud-sdk@sha256:13ddfa53510c66a32604ae90a22d48c3c2b9bf4d2194889da680da5a54a333fd
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk@sha256:abe63daaa5a79e06c0e423b893237786dd221a4518a22c4b7cb5c2acc2836497
     entrypoint: /bin/bash
     waitFor:
     - sbom
@@ -110,7 +110,7 @@ steps:
 
   # Create release in Google Cloud Deploy
   - id: release
-    name: gcr.io/google.com/cloudsdktool/cloud-sdk@sha256:13ddfa53510c66a32604ae90a22d48c3c2b9bf4d2194889da680da5a54a333fd
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk@sha256:abe63daaa5a79e06c0e423b893237786dd221a4518a22c4b7cb5c2acc2836497
     entrypoint: /bin/bash
     waitFor:
     - attest
