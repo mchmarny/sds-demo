@@ -10,8 +10,3 @@ spec:
     # encoding/xml element/attribute namespace prefixes during tokenization
     - projects/goog-vulnz/notes/CVE-2020-29511
     - projects/goog-vulnz/notes/CVE-2020-29509
-    - projects/goog-vulnz/notes/CVE-2023-29402
-    - projects/goog-vulnz/notes/CVE-2023-29403
-    - projects/goog-vulnz/notes/CVE-2023-29404
-    - projects/goog-vulnz/notes/CVE-2023-29405
-    - projects/goog-vulnz/notes/CVE-2023-29406
