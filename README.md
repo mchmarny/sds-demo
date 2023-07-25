@@ -220,7 +220,7 @@ gcloud artifacts docker images describe $digest --show-provenance --format json 
 ```shell
 slsa-verifier verify-image $digest \
   --provenance-path provenance.json \
-  --source-uri git+https://github.com/mchmarny/sds-demo \
+  --source-uri https://github.com/mchmarny/sds-demo \
   --builder-id https://cloudbuild.googleapis.com/GoogleHostedWorker@v0.3
 ```
 
